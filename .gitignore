@@ -1,0 +1,30 @@
+# Env
+.env
+.env.local
+
+# Claude Code local settings (machine-specific, not shared config)
+.claude/settings.local.json
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Angular / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+npm-debug.log*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Recordings (large binaries, kept out of git history)
+.recordings/
