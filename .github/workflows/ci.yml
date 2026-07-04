@@ -37,6 +37,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: returntocorp/semgrep-action@v1
         with: { config: p/owasp-top-ten }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      # Warm the local Maven cache so Trivy's fs scan resolves pom.xml dependency
+      # versions from disk instead of re-hitting Maven Central (avoids 429 rate limits).
+      - working-directory: backend
+        run: mvn -B dependency:go-offline
       - uses: aquasecurity/trivy-action@master
         with: { scan-type: fs, severity: 'CRITICAL,HIGH', exit-code: '1' }
       - uses: gitleaks/gitleaks-action@v2
