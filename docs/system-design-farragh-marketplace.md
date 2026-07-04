@@ -19,7 +19,7 @@
         ↓ HTTPS
 [Reverse proxy / Nginx — TLS termination, static Angular build]
         ↓
-[Spring Boot 3 API (modular monolith, single container)]
+[Spring Boot 4 API (modular monolith, single container)]
   ├── Auth module (JWT, RBAC)
   ├── Requests module (pickup lifecycle)
   ├── Recyclers module (zones, materials)
@@ -54,7 +54,7 @@
 ### SDR-1: Monolith vs microservices
 **NFR Driver**: Throughput (~20-50 RPS), small team
 **Options**:
-  🟢 Simple: modular monolith (single Spring Boot app, clear module packages)
+  🟢 Simple: modular monolith (single Spring Boot 4 app, clear module packages)
   🟡 Balanced: monolith + separate payments service
   🔴 Custom: full microservices (auth, requests, payments, notifications as separate services)
 **Decision**: 🟢 Modular monolith. Package-level module boundaries (auth/, requests/, recyclers/, municipality/, payments/, notifications/, admin/) keep a future extraction possible without paying microservices operational cost now.

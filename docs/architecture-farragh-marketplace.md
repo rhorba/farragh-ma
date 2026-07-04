@@ -4,7 +4,7 @@
 **Version**: 1.0 | **Date**: 2026-07-04 | **Author**: Tech Lead / Software Architect
 
 ## 1. Overview
-A layered, package-by-feature modular monolith in Spring Boot 3 (Java 25), backing an Angular 21 SPA. Each business capability (auth, requests, recyclers, municipality, payments, notifications, admin) is a self-contained package with its own controller/service/repository/entity, communicating with other modules only through public service interfaces — never direct cross-module repository access.
+A layered, package-by-feature modular monolith in Spring Boot 4.1 (Java 25), backing an Angular 21 SPA. Each business capability (auth, requests, recyclers, municipality, payments, notifications, admin) is a self-contained package with its own controller/service/repository/entity, communicating with other modules only through public service interfaces — never direct cross-module repository access.
 
 ## 2. Architecture Decision Records
 
@@ -46,7 +46,7 @@ A layered, package-by-feature modular monolith in Spring Boot 3 (Java 25), backi
 
 ## 3. System Structure
 ```
-[Angular 21 SPA] → HTTPS/JSON → [Spring Boot 3 API]
+[Angular 21 SPA] → HTTPS/JSON → [Spring Boot 4 API]
                                       │
         ┌────────────┬───────────────┼───────────────┬──────────────┐
         │            │               │               │              │

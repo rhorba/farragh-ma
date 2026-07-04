@@ -69,7 +69,7 @@ As any **user**, I want the app in French or Arabic, so that I can use it in my 
 - NFR-4: Coverage — ≥ 80% combined unit + integration test coverage before any ship
 
 ## 6. Constraints & Assumptions
-- Stack fixed: Java 25 (LTS) + Spring Boot 3.x + Maven backend; Angular 21 (LTS) frontend; PostgreSQL 16 + PostGIS
+- Stack fixed: Java 25 (LTS) + Spring Boot 4.1 + Maven backend; Angular 21 (LTS) frontend; PostgreSQL 16 + PostGIS
 - CMI payment runs in mock mode until real merchant credentials are available (assumption: mock is acceptable for this version's "done")
 - Deployment: Docker only; Kubernetes deferred (YAGNI) until a concrete scaling trigger
 - No video recording of E2E flows until the final sprint of this version (explicit user instruction, overrides default per-version-completion rule)

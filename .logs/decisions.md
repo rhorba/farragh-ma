@@ -17,3 +17,7 @@ ADR-1: Layered, package-by-feature (not hexagonal/DDD) — CRUD-heavy domain, lo
 ADR-2: PaymentGateway interface isolates CMI mock/real swap.
 ADR-3: Stateless JWT auth with role claims + resource ownership checks.
 ADR-4: PostGIS zone matching via repository query (ST_Contains/ST_DWithin), not in-app spatial logic.
+
+## 2026-07-04 — Local toolchain blocker resolved
+BLOCKER: Local machine has Java 21 + no Maven; target is Java 25 LTS.
+DECISION: Docker-only builds. Backend build/test/run always via Docker (JDK 25 + Maven baked into the image) and CI. No local Java/Maven install required. Frontend (Angular) runs natively via Node/npm since that's already installed and gives fast reload; backend+DB run in Docker during local dev.
