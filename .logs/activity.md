@@ -36,3 +36,7 @@ All foundation docs approved. Ready to commit and push per CLAUDE.md rule 13.
 ## PUSH — 2026-07-04
 Pushed foundation docs to origin/main. Commit: e9a9abe
 git push -u origin main — 76 files, "docs: foundation documents for farragh-ma"
+
+## CI — 2026-07-04
+Push 1f149e0: CI RED. frontend + backend jobs GREEN; security job failed (Trivy YAML flow-mapping bug: unquoted `severity: CRITICAL,HIGH` parsed HIGH as a bogus key).
+Fix: quoted the value in .github/workflows/ci.yml and docs/devops doc.
