@@ -10,7 +10,8 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
+        // Forest green primary per docs/ui-farragh-marketplace.md design tokens (#1B7F4D)
+        primary: mat.$green-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,

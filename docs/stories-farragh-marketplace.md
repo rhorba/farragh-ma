@@ -37,6 +37,16 @@ As a user of any role, I want to register and log in, so that I get a role-scope
 ---
 
 ## Epic 2: Pickup Request Core (Household/SME)
+
+### Story 2.0: Login/Register screens + auth interceptor
+**Priority**: Must | **Size**: S | **Specialist**: Frontend Dev
+**Added retroactively 2026-07-05** — the original backlog had no frontend story for auth, but every other screen depends on holding a JWT; without this nothing built afterward is reachable in a browser.
+As any user, I want to register and log in from the browser, so that I can use the rest of the app.
+- Given valid registration data, when I submit the register form, then I'm logged in and redirected to my role's home screen.
+- Given valid credentials, when I log in, then an HTTP interceptor attaches the JWT to all subsequent API calls.
+- Given an expired/invalid token, when an API call returns 401, then I'm redirected back to login.
+**Technical Notes**: Calls `/api/v1/auth/register` and `/api/v1/auth/login` (Story 1.4). Token stored in memory/sessionStorage (not localStorage, to limit XSS token theft window per Security doc).
+
 ### Story 2.1: Create pickup request
 **Priority**: Must | **Size**: M | **Specialist**: Backend Dev + Frontend Dev
 As a Household/SME, I want to post a pickup request with material, quantity, address+pin, so that recyclers can find it.
@@ -56,7 +66,7 @@ As a Household/SME, I want to cancel a request before it's completed, so that I'
 - Given status is POSTED or ACCEPTED, when I cancel, then status becomes CANCELLED and the recycler (if any) is notified.
 - Given status is COMPLETED, when I try to cancel, then the API rejects it (state machine, per Test Strategy scenario).
 
-**Sprint 2 total**: Stories 2.1-2.3
+**Sprint 2 total**: Stories 2.0-2.3
 
 ---
 
@@ -174,7 +184,7 @@ Deploy the full stack (backend, frontend, db, reverse-proxy) to the production h
 | Sprint | Epic Focus | Stories | Risk Note |
 |---|---|---|---|
 | Sprint 1 | Foundation & Infra | 1.1, 1.2, 1.3, 1.4 | Auth is risk-10 — don't rush |
-| Sprint 2 | Household Request Core | 2.1, 2.2, 2.3 | Standard |
+| Sprint 2 | Household Request Core | 2.0, 2.1, 2.2, 2.3 | Standard |
 | Sprint 3 | Recycler Zones & Matching | 3.1, 3.2, 3.3 | **Highest risk (13)** — PostGIS + race conditions |
 | Sprint 4 | Lifecycle & Notifications | 4.1, 4.2 | Standard |
 | Sprint 5 | Payments & Admin | 5.1, 5.2, 5.3 | Payment is risk-13 |

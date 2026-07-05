@@ -1,0 +1,47 @@
+<div class="new-request-page">
+  <h1>Nouvelle demande</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Matériau</mat-label>
+      <mat-select formControlName="materialTypeCode">
+        @for (m of materialTypes; track m.code) {
+          <mat-option [value]="m.code">{{ m.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Quantité (approx.)</mat-label>
+      <input matInput formControlName="quantityDesc" placeholder="ex. 2 sacs" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Adresse</mat-label>
+      <input matInput formControlName="addressText" />
+      @if (form.controls.addressText.invalid && form.controls.addressText.touched) {
+        <mat-error>L'adresse est requise</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="coords">
+      <mat-form-field appearance="outline">
+        <mat-label>Latitude</mat-label>
+        <input matInput type="number" formControlName="latitude" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Longitude</mat-label>
+        <input matInput type="number" formControlName="longitude" />
+      </mat-form-field>
+    </div>
+    @if ((form.controls.latitude.invalid || form.controls.longitude.invalid) && form.controls.latitude.touched) {
+      <mat-error>La position (latitude/longitude) est requise</mat-error>
+    }
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Publier la demande</button>
+  </form>
+</div>

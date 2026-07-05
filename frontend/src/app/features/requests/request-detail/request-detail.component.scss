@@ -1,0 +1,28 @@
+.request-detail-page {
+  max-width: 480px;
+  margin: 32px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 12px;
+    row-gap: 4px;
+  }
+
+  dt {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant, #666);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .error {
+    color: var(--mat-sys-error, #dc2626);
+  }
+}

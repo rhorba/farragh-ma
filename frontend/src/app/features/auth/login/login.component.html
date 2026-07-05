@@ -1,0 +1,23 @@
+<div class="auth-page">
+  <h1>Connexion</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Se connecter</button>
+  </form>
+
+  <p>Pas encore de compte ? <a routerLink="/register">S'inscrire</a></p>
+</div>

@@ -13,3 +13,8 @@ FIX: Added a `mvn dependency:go-offline` warm-up step before Trivy in the securi
 ## 2026-07-04 — CI: real CVE found (Trivy working correctly)
 ISSUE: Trivy (after cache fix) found CVE-2025-14813 (CRITICAL) in org.bouncycastle:bcprov-jdk18on 1.79 (GOSTCTR cipher block-count bug).
 FIX: Bumped bouncycastle.version to 1.84 (patched) in backend/pom.xml. Verified full test suite still passes (8/8) after the bump.
+
+## 2026-07-05 — Sprint 2 issues found & fixed
+ISSUE: Spring Security's default entry point (Http403ForbiddenEntryPoint) returned 403 for requests with no JWT at all, not 401. Fixed by disabling anonymous authentication and configuring an explicit HttpStatusEntryPoint(401) in SecurityConfig.
+ISSUE: Frontend Nginx (bare nginx:1.27-alpine) had no SPA fallback — direct navigation to client-side routes like /login returned 404. Fixed by adding frontend/nginx.conf with `try_files $uri $uri/ /index.html` and copying it into the Dockerfile.
+Both found and fixed during live E2E verification (curl through the real docker-compose stack), not just unit/integration tests.

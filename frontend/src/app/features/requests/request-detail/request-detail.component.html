@@ -1,0 +1,27 @@
+<div class="request-detail-page">
+  <a routerLink="/requests">&larr; Mes demandes</a>
+
+  @if (loading()) {
+    <p>Chargement...</p>
+  } @else if (notFound()) {
+    <p class="error">Demande introuvable.</p>
+  } @else if (request(); as r) {
+    <h1>{{ r.materialTypeCode }}</h1>
+    <app-status-badge [status]="r.status" />
+
+    <dl>
+      <dt>Adresse</dt>
+      <dd>{{ r.addressText }}</dd>
+      @if (r.quantityDesc) {
+        <dt>Quantité</dt>
+        <dd>{{ r.quantityDesc }}</dd>
+      }
+      <dt>Publiée le</dt>
+      <dd>{{ r.createdAt | date: 'medium' }}</dd>
+    </dl>
+
+    @if (canCancel()) {
+      <button mat-stroked-button color="warn" (click)="cancel()" [disabled]="cancelling()">Annuler la demande</button>
+    }
+  }
+</div>

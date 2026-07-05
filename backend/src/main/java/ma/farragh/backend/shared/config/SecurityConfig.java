@@ -11,7 +11,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -44,6 +46,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // stateless JWT API, no cookies/CSRF surface
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // No anonymous principal: a missing/invalid JWT must surface as 401 (not authenticated),
+                // not 403 (authenticated as anonymous, but lacking a role) — see Security Baseline doc §3.
+                .anonymous(anonymous -> anonymous.disable())
+                // Spring Security's default entry point (Http403ForbiddenEntryPoint) returns 403 even for
+                // "not authenticated at all" — override it so missing/invalid credentials are 401.
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**", "/actuator/health").permitAll()
                         .anyRequest().authenticated())

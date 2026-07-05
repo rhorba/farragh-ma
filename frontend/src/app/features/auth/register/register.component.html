@@ -1,0 +1,48 @@
+<div class="auth-page">
+  <h1>Créer un compte</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="role">
+        @for (r of roles; track r.value) {
+          <mat-option [value]="r.value">{{ r.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom complet</mat-label>
+      <input matInput formControlName="fullName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <mat-error>Adresse email invalide</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Téléphone (optionnel)</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <mat-error>Au moins 10 caractères</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">S'inscrire</button>
+  </form>
+
+  <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+</div>
