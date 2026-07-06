@@ -100,6 +100,39 @@ class RequestsControllerTest {
     }
 
     @Test
+    void tamperedTokenSignatureIsRejected() {
+        String token = registerHouseholdAndGetToken("tamper@example.com");
+        int lastDot = token.lastIndexOf('.');
+        char flipped = token.charAt(token.length() - 1) == 'A' ? 'B' : 'A';
+        String tampered = token.substring(0, token.length() - 1) + flipped;
+        assertThat(lastDot).isPositive();
+
+        restClient.post().uri("/api/v1/requests")
+                .header("Authorization", "Bearer " + tampered)
+                .body(sampleRequest())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void arabicAddressTextIsPersistedAndReturnedUnaltered() {
+        String token = registerHouseholdAndGetToken("arabic@example.com");
+        String arabicAddress = "١٢ شارع الحسن الثاني، الدار البيضاء";
+        CreateRequestDto request = new CreateRequestDto("PLASTIC", "كيسان", arabicAddress, 33.5731, -7.5898, null);
+
+        RequestResponseDto body = restClient.post().uri("/api/v1/requests")
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CREATED)
+                .expectBody(RequestResponseDto.class)
+                .returnResult().getResponseBody();
+
+        assertThat(body).isNotNull();
+        assertThat(body.addressText()).isEqualTo(arabicAddress);
+    }
+
+    @Test
     void listMineOnlyReturnsOwnRequests() {
         String tokenA = registerHouseholdAndGetToken("userA@example.com");
         String tokenB = registerHouseholdAndGetToken("userB@example.com");

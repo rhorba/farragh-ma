@@ -1,0 +1,48 @@
+<div class="recycler-profile-page">
+  <h1>Ma zone de couverture</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="coords">
+      <mat-form-field appearance="outline">
+        <mat-label>Latitude du centre</mat-label>
+        <input matInput type="number" formControlName="centerLatitude" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Longitude du centre</mat-label>
+        <input matInput type="number" formControlName="centerLongitude" />
+      </mat-form-field>
+    </div>
+    @if ((form.controls.centerLatitude.invalid || form.controls.centerLongitude.invalid) && form.controls.centerLatitude.touched) {
+      <mat-error>Le centre de la zone (latitude/longitude) est requis</mat-error>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rayon (mètres)</mat-label>
+      <input matInput type="number" formControlName="radiusM" />
+      @if (form.controls.radiusM.invalid && form.controls.radiusM.touched) {
+        <mat-error>Le rayon doit être d'au moins 50 mètres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Matériaux acceptés</mat-label>
+      <mat-select formControlName="materialTypeCodes" multiple>
+        @for (m of materialTypes; track m.code) {
+          <mat-option [value]="m.code">{{ m.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.materialTypeCodes.invalid && form.controls.materialTypeCodes.touched) {
+        <mat-error>Choisissez au moins un matériau</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage(); as error) {
+      <p class="error">{{ error }}</p>
+    }
+    @if (successMessage(); as success) {
+      <p class="success">{{ success }}</p>
+    }
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Enregistrer</button>
+  </form>
+</div>

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
+import { recyclerGuard } from './core/auth/recycler.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -29,6 +30,23 @@ export const routes: Routes = [
         path: ':id',
         loadComponent: () =>
           import('./features/requests/request-detail/request-detail.component').then((m) => m.RequestDetailComponent)
+      }
+    ]
+  },
+  {
+    path: 'recycler',
+    canActivate: [recyclerGuard],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'feed' },
+      {
+        path: 'feed',
+        loadComponent: () =>
+          import('./features/recyclers/feed/recycler-feed.component').then((m) => m.RecyclerFeedComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/recyclers/profile/recycler-profile.component').then((m) => m.RecyclerProfileComponent)
       }
     ]
   }

@@ -44,6 +44,10 @@ export class LoginComponent {
 
   private redirectAfterAuth(): void {
     const role = this.authService.role();
-    this.router.navigate([role === 'HOUSEHOLD_SME' ? '/requests' : '/']);
+    if (role === 'RECYCLER') {
+      this.router.navigate(['/recycler']);
+    } else {
+      this.router.navigate([role === 'HOUSEHOLD_SME' ? '/requests' : '/']);
+    }
   }
 }

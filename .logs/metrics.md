@@ -19,3 +19,12 @@ E2E: verified live via curl through the actual docker-compose stack (register ->
 CI: GREEN on first push (main)
 Corrections logged: missing frontend auth story added as 2.0; Spring Security 403->401 entry point fix; Nginx SPA fallback fix
 Next: Sprint 3 (Recycler Zones & Matching Feed - Stories 3.1-3.3, highest risk per Test Strategy)
+
+## COVERAGE — 2026-07-06 — Sprint 3
+Backend (full suite, JaCoCo): 89% instruction coverage, ~91% line coverage (359 lines, 31 missed). 30/30 tests green (auth 5, recyclers 16, requests 6, app 1, migration 2).
+Frontend: whole-project coverage is ~18% (17.37% lines) - pre-existing gap from Sprint 2 (login/register/request-list/request-detail/new-request/status-badge components have no specs). Decision (user-approved): scope Sprint 3's gate to its own new/touched code rather than closing the whole-project gap this session.
+Frontend, Sprint 3 scope only (recyclers feature + auth guards, incl. new recycler-profile.component.spec.ts and recycler-feed.component.spec.ts added this session): 94.06% statements, 93.87% lines. 19/19 tests green, lint clean.
+Backlog item: write specs for Sprint 2 components (login, register, request-list, request-detail, new-request, status-badge) to close the whole-project 80% gate - not done this session, flagged as a known risk.
+
+## SPRINT_SNAPSHOT — 2026-07-06 — Sprint 3
+Stories 3.1-3.3 (Recycler Zones & Matching Feed) complete. Backend 32/32 tests, 89% instruction / ~92% line coverage. Frontend 19/19 tests, lint clean, Sprint-3-scope coverage 94%; whole-project coverage ~18% (pre-existing Sprint 2 gap, logged as risk, not closed this sprint).

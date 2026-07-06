@@ -1,0 +1,28 @@
+<div class="recycler-feed-page">
+  <h1>Demandes correspondantes</h1>
+
+  @if (acceptError(); as error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (loading()) {
+    <p>Chargement...</p>
+  } @else if (loadError()) {
+    <p class="error">Impossible de charger le fil. <button mat-button (click)="load()">Réessayer</button></p>
+  } @else if (requests().length === 0) {
+    <p class="empty-state">Aucune demande correspondante pour le moment.</p>
+  } @else {
+    <ul class="requests">
+      @for (r of requests(); track r.id) {
+        <li class="request-card">
+          <span class="material">{{ r.materialTypeCode }}</span>
+          <span class="address">{{ r.addressText }}</span>
+          <app-status-badge [status]="r.status" />
+          <button mat-flat-button color="primary" [disabled]="acceptingId() === r.id" (click)="accept(r.id)">
+            Accepter
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

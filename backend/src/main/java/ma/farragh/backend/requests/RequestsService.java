@@ -81,7 +81,7 @@ public class RequestsService {
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "REQUEST_NOT_FOUND", "Request not found."));
     }
 
-    private static RequestResponseDto toDto(PickupRequest r) {
+    public static RequestResponseDto toDto(PickupRequest r) {
         return new RequestResponseDto(
                 r.getId(),
                 r.getMaterialType().getCode(),
