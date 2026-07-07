@@ -102,10 +102,15 @@ class RequestsControllerTest {
     @Test
     void tamperedTokenSignatureIsRejected() {
         String token = registerHouseholdAndGetToken("tamper@example.com");
-        int lastDot = token.lastIndexOf('.');
-        char flipped = token.charAt(token.length() - 1) == 'A' ? 'B' : 'A';
-        String tampered = token.substring(0, token.length() - 1) + flipped;
-        assertThat(lastDot).isPositive();
+        String[] parts = token.split("\\.");
+        assertThat(parts).hasSize(3);
+        // Flip the first character of the payload segment: it's a full 6-bit-aligned
+        // base64url unit (no padding ambiguity like a segment's last char can have), so
+        // this deterministically changes the decoded bytes and invalidates the signature.
+        char first = parts[1].charAt(0);
+        char flipped = first == 'a' ? 'b' : 'a';
+        String tamperedPayload = flipped + parts[1].substring(1);
+        String tampered = parts[0] + "." + tamperedPayload + "." + parts[2];
 
         restClient.post().uri("/api/v1/requests")
                 .header("Authorization", "Bearer " + tampered)
