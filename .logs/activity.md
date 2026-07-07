@@ -80,3 +80,6 @@ Verify phase (this session, resumed): golden path walked end-to-end via docker-c
 
 ## PUSH — 2026-07-06
 Pushed Sprint 3 to origin/main. Commit: 6e0b64e — "feat(sprint-3): recycler zones, materials, and matched-request feed" (36 files, 1665 insertions).
+
+## CI — 2026-07-07 (green after fix)
+Push 6e0b64e (Sprint 3): CI RED - backend job failed on the new tamperedTokenSignatureIsRejected test (flaky, see .logs/issues.md). Fixed in 67a82a4 (tamper payload's first char instead of signature's last char, verified deterministic across 3 local runs). Push 67a82a4: CI GREEN - security/backend/frontend/build all pass. Sprint 3 done.
