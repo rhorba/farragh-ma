@@ -49,3 +49,13 @@ Resumed via "lets continue". Last session ended mid-Sprint-3: all code (batches 
 ## SESSION_END — 2026-07-06 (Sprint 3 shipped)
 Sprint 3 (Recycler Zones & Matching Feed) fully implemented, verified, and about to be pushed. Golden path verified via docker-compose+curl (browser extension still not connecting - persistent gap). Backend 32/30->32 tests green, coverage 89%/92%. Frontend 19 tests green, lint clean; added 2 recycler component specs this session. Adversarial checklist re-reviewed: added JWT-tamper and Arabic-unicode tests; ST_DWithin boundary test remains intentionally skipped (documented). Known open item: Sprint 2 frontend components (login, register, request-list, request-detail, new-request, status-badge) have no unit specs - whole-project coverage ~18%, logged in .logs/risks.md as backlog for a dedicated follow-up sprint.
 Next: Sprint 4 per docs/stories-farragh-marketplace.md, OR a dedicated coverage-closure sprint for the Sprint 2 frontend gap - ask user which to prioritize next session.
+
+## SESSION_END — 2026-07-07 (Sprint 3 shipped, CI green)
+Sprint 3 (Recycler Zones & Matching Feed) fully shipped on origin/main at commit 08fd7a6. CI green (security/backend/frontend/build). Backend 32/32 tests, 89% instruction/~92% line coverage. Frontend 19/19 tests, lint clean, 94% coverage on Sprint 3's own new code (recyclers feature + guard).
+This session: verified golden path via docker-compose+curl (browser extension still not connecting - persistent gap, worth checking before next UI-heavy session). Caught and closed a real gap: whole-project frontend coverage was ~18% due to zero specs on all Sprint 2 feature components - user chose to scope the 80% gate to Sprint 3's own code rather than close the whole gap now; logged as an explicit risk/backlog item in .logs/risks.md. Re-reviewed the adversarial checklist and added 2 tests (JWT-tamper, Arabic/unicode) - the JWT-tamper test's first version was flaky (caught by CI going red), fixed and pushed a second time; CI is now green.
+Known gaps carried forward:
+- Sprint 2 frontend components (login, register, request-list, request-detail, new-request, status-badge) have no unit specs. Whole-project frontend coverage ~18%, well below the 80% gate. Needs a dedicated task/sprint.
+- claude-in-chrome still not connecting (3rd session in a row) - worth checking the extension/login before the next UI-heavy session.
+- No mvnw committed; local runs use cached Maven 3.9.9 at ~/.m2/wrapper/dists/apache-maven-3.9.9-bin/33b4b2b4/apache-maven-3.9.9/bin.
+Docker: stack was brought down cleanly after golden-path verification.
+Next: ask user whether Sprint 4 (per docs/stories-farragh-marketplace.md) or a dedicated frontend-coverage-closure sprint should come first.
