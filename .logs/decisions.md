@@ -36,3 +36,6 @@ Reviewed docs/test-strategy-farragh-marketplace.md checklist against the final d
 - ST_DWithin exact boundary edge: intentionally skipped (already logged prior session) - flaky to construct a precise geodesic boundary point; ST_DWithin's inclusive (<=) behavior is documented as intentional.
 - JWT signature tampering and Arabic/unicode address text: found untested (gap). User chose to add both now rather than defer.
 Added: RequestsControllerTest.tamperedTokenSignatureIsRejected (flips last char of a valid JWT, expects 401) and .arabicAddressTextIsPersistedAndReturnedUnaltered (Arabic addressText/quantityDesc round-trips exactly). Backend suite now 32/32 green, coverage unchanged at 89% instruction / ~92% line.
+
+## 2026-07-15 — Coverage-closure sprint depth
+Chose Balanced approach: happy path + primary error/validation cases per component, matching the depth of Sprint 3's recycler-feed.component.spec.ts (TestBed + HttpTestingController pattern). Not doing full adversarial/unicode edge cases or re-baselining the CI gate to whole-project 80% this sprint.

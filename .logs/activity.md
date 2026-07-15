@@ -83,3 +83,24 @@ Pushed Sprint 3 to origin/main. Commit: 6e0b64e — "feat(sprint-3): recycler zo
 
 ## CI — 2026-07-07 (green after fix)
 Push 6e0b64e (Sprint 3): CI RED - backend job failed on the new tamperedTokenSignatureIsRejected test (flaky, see .logs/issues.md). Fixed in 67a82a4 (tamper payload's first char instead of signature's last char, verified deterministic across 3 local runs). Push 67a82a4: CI GREEN - security/backend/frontend/build all pass. Sprint 3 done.
+
+## 2026-07-15 — PLAN: Coverage-closure sprint
+📋 BATCH 1: status-badge + auth (smallest/simplest components first)
+  ├── status-badge.component.spec.ts — renders correct label/class per status input
+  ├── login.component.spec.ts — happy-path login, invalid-credentials error, form validation
+  └── register.component.spec.ts — happy-path register (all 4 roles), duplicate-email error, form validation
+📋 BATCH 2: request components
+  ├── new-request.component.spec.ts — happy-path submit, validation errors, HTTP error
+  ├── request-list.component.spec.ts — loads/renders list, empty state, load error
+  └── request-detail.component.spec.ts — loads detail, cancel action, cancel error
+📋 BATCH 3: Verify + Ship
+  ├── run frontend coverage report, confirm whole-project ≥ Sprint-3 baseline (target: meaningfully closes the 18% gap)
+  ├── lint + full test suite
+  ├── update .logs/risks.md (close or downgrade the coverage risk)
+  └── commit + push
+
+## 2026-07-15 — EXECUTE: Batch 1 complete
+Added status-badge.component.spec.ts (5 status-label cases), login.component.spec.ts (4 tests: validation, success x2 roles, error), register.component.spec.ts (6 tests: default role, validation, minlength, success x2 roles, duplicate-email error). Found and corrected a wrong test assumption: LoginComponent does NOT reset `submitting` on success (only on error, since success navigates away) - test adjusted to match real behavior, not a code bug. Full suite: 34/34 green.
+
+## 2026-07-15 — EXECUTE: Batch 2 complete
+Added new-request.component.spec.ts (4 tests), request-list.component.spec.ts (4 tests), request-detail.component.spec.ts (6 tests, incl. ActivatedRoute mock for the paramMap-based id read). Full suite: 13 files, 48/48 tests green. All 6 previously-untested Sprint 2 components now have specs.

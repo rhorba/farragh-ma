@@ -28,3 +28,13 @@ Backlog item: write specs for Sprint 2 components (login, register, request-list
 
 ## SPRINT_SNAPSHOT — 2026-07-06 — Sprint 3
 Stories 3.1-3.3 (Recycler Zones & Matching Feed) complete. Backend 32/32 tests, 89% instruction / ~92% line coverage. Frontend 19/19 tests, lint clean, Sprint-3-scope coverage 94%; whole-project coverage ~18% (pre-existing Sprint 2 gap, logged as risk, not closed this sprint).
+
+## 2026-07-15 — SPRINT_SNAPSHOT: Coverage-closure sprint
+Whole-project frontend coverage (was ~18% before this sprint, only auth/* + app.spec.ts had specs):
+  Statements: 89.65% (520/580)
+  Branches:   93.54% (203/217)
+  Functions:  86.58% (71/82)
+  Lines:      93.85% (351/374)
+Gate: >= 80% combined unit+integration — PASSED (all four metrics clear).
+Test files: 13 (was 7), Tests: 48 (was 34 before this sprint, 19 before Sprint 3). Lint: clean.
+Remaining known gap (pre-existing, not in this sprint's scope): recycler-feed.component.html template coverage still low (24.39%) - Sprint 3's own spec asserts on component signals but doesn't call fixture.detectChanges() post-flush, same pattern this sprint fixed elsewhere. Small follow-up if the whole-project number needs to climb further.

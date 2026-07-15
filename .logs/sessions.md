@@ -59,3 +59,11 @@ Known gaps carried forward:
 - No mvnw committed; local runs use cached Maven 3.9.9 at ~/.m2/wrapper/dists/apache-maven-3.9.9-bin/33b4b2b4/apache-maven-3.9.9/bin.
 Docker: stack was brought down cleanly after golden-path verification.
 Next: ask user whether Sprint 4 (per docs/stories-farragh-marketplace.md) or a dedicated frontend-coverage-closure sprint should come first.
+
+## SESSION_START — 2026-07-15
+Resumed via "continue". Last session ended clean: Sprint 3 shipped, CI green (5fcde79), working tree clean. Open decision from prior log: Sprint 4 vs. coverage-closure sprint. User chose coverage-closure sprint: write unit specs for the 6 untested Sprint 2 components (login, register, request-list, request-detail, new-request, status-badge) to close the ~18% whole-project frontend coverage gap (docs/[[risk 2026-07-06]]).
+
+## SESSION_END — 2026-07-15 (coverage-closure sprint shipped)
+Coverage-closure sprint complete: added unit specs for the 6 previously-untested Sprint 2 frontend components (status-badge, login, register, new-request, request-list, request-detail). Whole-project frontend coverage raised from ~18% to 89.65% statements / 93.85% lines (was scoped to Sprint-3-only in the last session; now genuinely whole-project, gate cleared). 48/48 tests green, lint clean. Risk logged 2026-07-06 closed.
+Next: ask user whether to pick up Sprint 4 (per docs/stories-farragh-marketplace.md) next session. Minor optional follow-up noted (not urgent): recycler-feed.component.spec.ts (Sprint 3) could get the same detectChanges()-after-flush treatment to lift its own template coverage further, but whole-project gate is already clear without it.
+Known gaps carried forward (unchanged): claude-in-chrome browser extension still not connecting (persistent, worth checking before next UI-heavy session); no mvnw committed, local backend runs use cached Maven 3.9.9.
