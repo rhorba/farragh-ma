@@ -137,3 +137,6 @@ Batch 1 (backend): new payments/ package - PaymentGateway interface + MockCmiGat
 Batch 2 (frontend): Pay button on request-detail (visible when COMPLETED and not yet paid), "Paiement effectué" confirmation once paid, error+retry on failure. 5 new/updated spec tests.
 Backend: 48/48 tests, coverage 91.56% instruction / 92.95% line. Frontend: 66/66 tests, lint clean, coverage 91.03% statements / 94.94% lines.
 Story 5.2 required no new work this sprint (already satisfied by Sprint 4's admin-preview pull-forward). Story 5.3 deferred per user decision.
+
+## 2026-07-15 — SHIP: Sprint 5
+Pushed to origin/main: cac13cd (from 651877d). CI run 29439195094 GREEN (backend, frontend, security, build all passed; release-coverage-gate skipped as expected).
