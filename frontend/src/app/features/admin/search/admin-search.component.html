@@ -1,0 +1,82 @@
+<div class="admin-search-page">
+  <h1>Administration</h1>
+
+  <section class="panel">
+    <h2>Utilisateurs</h2>
+    <form [formGroup]="userFilterForm" (ngSubmit)="searchUsers()" class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Rôle</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="">Tous</mat-option>
+          @for (r of roles; track r) {
+            <mat-option [value]="r">{{ r }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit" [disabled]="usersLoading()">Rechercher</button>
+    </form>
+
+    @if (usersLoading()) {
+      <p>Chargement...</p>
+    } @else if (usersSearched() && users().length === 0) {
+      <p class="empty-state">Aucun utilisateur trouvé.</p>
+    } @else if (users().length > 0) {
+      <table class="results">
+        <thead>
+          <tr><th>Email</th><th>Rôle</th><th>Nom</th><th>Actif</th></tr>
+        </thead>
+        <tbody>
+          @for (u of users(); track u.id) {
+            <tr>
+              <td>{{ u.email }}</td>
+              <td>{{ u.role }}</td>
+              <td>{{ u.fullName }}</td>
+              <td>{{ u.active ? 'Oui' : 'Non' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="panel">
+    <h2>Demandes</h2>
+    <form [formGroup]="requestFilterForm" (ngSubmit)="searchRequests()" class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="">Tous</mat-option>
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ s }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit" [disabled]="requestsLoading()">Rechercher</button>
+    </form>
+
+    @if (requestsLoading()) {
+      <p>Chargement...</p>
+    } @else if (requestsSearched() && requests().length === 0) {
+      <p class="empty-state">Aucune demande trouvée.</p>
+    } @else if (requests().length > 0) {
+      <table class="results">
+        <thead>
+          <tr><th>Matériau</th><th>Adresse</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          @for (r of requests(); track r.id) {
+            <tr>
+              <td>{{ r.materialTypeCode }}</td>
+              <td>{{ r.addressText }}</td>
+              <td><app-status-badge [status]="r.status" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

@@ -6,20 +6,20 @@ import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.
 import { RecyclersService } from '../recyclers.service';
 
 @Component({
-  selector: 'app-recycler-feed',
+  selector: 'app-accepted-requests',
   standalone: true,
   imports: [RouterLink, MatButtonModule, StatusBadgeComponent],
-  templateUrl: './recycler-feed.component.html',
-  styleUrl: './recycler-feed.component.scss'
+  templateUrl: './accepted-requests.component.html',
+  styleUrl: './accepted-requests.component.scss'
 })
-export class RecyclerFeedComponent implements OnInit {
+export class AcceptedRequestsComponent implements OnInit {
   private readonly recyclersService = inject(RecyclersService);
 
   readonly requests = signal<RequestResponseDto[]>([]);
   readonly loading = signal(true);
   readonly loadError = signal(false);
-  readonly acceptingId = signal<string | null>(null);
-  readonly acceptError = signal<string | null>(null);
+  readonly updatingId = signal<string | null>(null);
+  readonly updateError = signal<string | null>(null);
 
   ngOnInit(): void {
     this.load();
@@ -28,7 +28,7 @@ export class RecyclerFeedComponent implements OnInit {
   load(): void {
     this.loading.set(true);
     this.loadError.set(false);
-    this.recyclersService.getFeed().subscribe({
+    this.recyclersService.listAccepted().subscribe({
       next: (requests) => {
         this.requests.set(requests);
         this.loading.set(false);
@@ -40,17 +40,25 @@ export class RecyclerFeedComponent implements OnInit {
     });
   }
 
-  accept(id: string): void {
-    this.acceptError.set(null);
-    this.acceptingId.set(id);
-    this.recyclersService.accept(id).subscribe({
-      next: () => {
-        this.requests.update((list) => list.filter((r) => r.id !== id));
-        this.acceptingId.set(null);
+  schedule(id: string): void {
+    this.runTransition(id, this.recyclersService.schedule(id));
+  }
+
+  complete(id: string): void {
+    this.runTransition(id, this.recyclersService.complete(id));
+  }
+
+  private runTransition(id: string, action: ReturnType<RecyclersService['schedule']>): void {
+    this.updateError.set(null);
+    this.updatingId.set(id);
+    action.subscribe({
+      next: (updated) => {
+        this.requests.update((list) => list.map((r) => (r.id === id ? updated : r)));
+        this.updatingId.set(null);
       },
       error: () => {
-        this.acceptingId.set(null);
-        this.acceptError.set('Cette demande vient d\'être acceptée par un autre recycleur.');
+        this.updatingId.set(null);
+        this.updateError.set("Impossible de mettre à jour cette demande. Réessayez.");
         this.load();
       }
     });

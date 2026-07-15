@@ -48,4 +48,7 @@ management:
       show-details: when-authorized
   health:
     mail:
-      enabled: false   # re-enable in Sprint 4 once real SMTP notifications are wired up (Story 4.2)
+      enabled: false   # Story 4.2 sends emails, but no real SMTP server exists in dev/CI/docker-compose
+                        # yet - enabling this would flip /actuator/health to DOWN (503) and break the
+                        # docker-compose healthcheck that gates container startup. Re-enable once a real
+                        # SMTP relay is provisioned for an environment.

@@ -60,6 +60,17 @@ describe('LoginComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/recycler']);
   });
 
+  it('redirects admin users to /admin', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    component.form.setValue({ email: 'admin@example.com', password: 'secret1234' });
+
+    component.submit();
+    httpMock.expectOne(loginUrl)
+      .flush({ accessToken: 'token-abc', refreshToken: 'refresh-abc', userId: 'u3', role: 'ADMIN' });
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/admin']);
+  });
+
   it('sets an error message and resets submitting when login fails', () => {
     component.form.setValue({ email: 'a@example.com', password: 'wrongpass' });
 

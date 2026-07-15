@@ -59,4 +59,19 @@ public class RecyclersController {
     public RequestResponseDto accept(@PathVariable UUID id) {
         return recyclersService.accept(CurrentUser.id(), id);
     }
+
+    @GetMapping("/requests")
+    public List<RequestResponseDto> listAccepted() {
+        return recyclersService.listAccepted(CurrentUser.id());
+    }
+
+    @PostMapping("/requests/{id}/schedule")
+    public RequestResponseDto schedule(@PathVariable UUID id) {
+        return recyclersService.schedule(CurrentUser.id(), id);
+    }
+
+    @PostMapping("/requests/{id}/complete")
+    public RequestResponseDto complete(@PathVariable UUID id) {
+        return recyclersService.complete(CurrentUser.id(), id);
+    }
 }

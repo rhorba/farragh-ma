@@ -1,0 +1,32 @@
+.admin-search-page {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
+
+  .panel {
+    margin-bottom: 32px;
+  }
+
+  .filters {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .empty-state {
+    color: var(--mat-sys-on-surface-variant, #666);
+  }
+
+  .results {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+    }
+  }
+}

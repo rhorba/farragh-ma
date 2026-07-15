@@ -388,6 +388,84 @@ class RecyclersControllerTest {
     }
 
     @Test
+    void acceptedRequestProgressesThroughScheduledToCompleted() {
+        String recyclerToken = registerRecyclerAndGetToken("lifecycle-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("lifecycle-household@example.com");
+        declareZoneAndMaterial(recyclerToken, "PLASTIC");
+        UUID requestId = postRequestAndGetId(householdToken, "PLASTIC", 33.5735, -7.5890);
+        restClient.post().uri("/api/v1/recyclers/feed/" + requestId + "/accept")
+                .header("Authorization", "Bearer " + recyclerToken).exchange().expectStatus().isOk();
+
+        RequestResponseDto scheduled = restClient.post().uri("/api/v1/recyclers/requests/" + requestId + "/schedule")
+                .header("Authorization", "Bearer " + recyclerToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(RequestResponseDto.class)
+                .returnResult().getResponseBody();
+        assertThat(scheduled.status()).isEqualTo(ma.farragh.backend.requests.RequestStatus.SCHEDULED);
+
+        RequestResponseDto completed = restClient.post().uri("/api/v1/recyclers/requests/" + requestId + "/complete")
+                .header("Authorization", "Bearer " + recyclerToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(RequestResponseDto.class)
+                .returnResult().getResponseBody();
+        assertThat(completed.status()).isEqualTo(ma.farragh.backend.requests.RequestStatus.COMPLETED);
+
+        List<RequestResponseDto> accepted = restClient.get().uri("/api/v1/recyclers/requests")
+                .header("Authorization", "Bearer " + recyclerToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new org.springframework.core.ParameterizedTypeReference<List<RequestResponseDto>>() {})
+                .returnResult().getResponseBody();
+        assertThat(accepted).extracting(RequestResponseDto::id).contains(requestId);
+    }
+
+    @Test
+    void completingAnAcceptedButNotYetScheduledRequestIsRejected() {
+        String recyclerToken = registerRecyclerAndGetToken("skip-ahead-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("skip-ahead-household@example.com");
+        declareZoneAndMaterial(recyclerToken, "PLASTIC");
+        UUID requestId = postRequestAndGetId(householdToken, "PLASTIC", 33.5735, -7.5890);
+        restClient.post().uri("/api/v1/recyclers/feed/" + requestId + "/accept")
+                .header("Authorization", "Bearer " + recyclerToken).exchange().expectStatus().isOk();
+
+        restClient.post().uri("/api/v1/recyclers/requests/" + requestId + "/complete")
+                .header("Authorization", "Bearer " + recyclerToken)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT);
+    }
+
+    @Test
+    void schedulingAPostedRequestThatWasNeverAcceptedIsRejected() {
+        String recyclerToken = registerRecyclerAndGetToken("never-accepted-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("never-accepted-household@example.com");
+        declareZoneAndMaterial(recyclerToken, "PLASTIC");
+        UUID requestId = postRequestAndGetId(householdToken, "PLASTIC", 33.5735, -7.5890);
+
+        restClient.post().uri("/api/v1/recyclers/requests/" + requestId + "/schedule")
+                .header("Authorization", "Bearer " + recyclerToken)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void aDifferentRecyclerCannotScheduleSomeoneElsesAcceptedRequest() {
+        String ownerToken = registerRecyclerAndGetToken("owner-recycler@example.com");
+        String intruderToken = registerRecyclerAndGetToken("intruder-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("intrusion-household@example.com");
+        declareZoneAndMaterial(ownerToken, "PLASTIC");
+        UUID requestId = postRequestAndGetId(householdToken, "PLASTIC", 33.5735, -7.5890);
+        restClient.post().uri("/api/v1/recyclers/feed/" + requestId + "/accept")
+                .header("Authorization", "Bearer " + ownerToken).exchange().expectStatus().isOk();
+
+        restClient.post().uri("/api/v1/recyclers/requests/" + requestId + "/schedule")
+                .header("Authorization", "Bearer " + intruderToken)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     void twoRecyclersAcceptingSimultaneouslyOnlyOneWins() throws InterruptedException {
         String recyclerAToken = registerRecyclerAndGetToken("race-recyclerA@example.com");
         String recyclerBToken = registerRecyclerAndGetToken("race-recyclerB@example.com");

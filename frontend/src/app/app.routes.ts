@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { recyclerGuard } from './core/auth/recycler.guard';
+import { adminGuard } from './core/auth/admin.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -44,10 +45,21 @@ export const routes: Routes = [
           import('./features/recyclers/feed/recycler-feed.component').then((m) => m.RecyclerFeedComponent)
       },
       {
+        path: 'accepted',
+        loadComponent: () =>
+          import('./features/recyclers/accepted/accepted-requests.component').then((m) => m.AcceptedRequestsComponent)
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/recyclers/profile/recycler-profile.component').then((m) => m.RecyclerProfileComponent)
       }
     ]
+  },
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/search/admin-search.component').then((m) => m.AdminSearchComponent)
   }
 ];

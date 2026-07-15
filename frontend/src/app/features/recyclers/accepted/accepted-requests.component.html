@@ -1,0 +1,37 @@
+<div class="accepted-requests-page">
+  <div class="header">
+    <h1>Mes demandes acceptées</h1>
+    <a mat-button routerLink="/recycler/feed">Fil des demandes</a>
+  </div>
+
+  @if (updateError(); as error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (loading()) {
+    <p>Chargement...</p>
+  } @else if (loadError()) {
+    <p class="error">Impossible de charger vos demandes. <button mat-button (click)="load()">Réessayer</button></p>
+  } @else if (requests().length === 0) {
+    <p class="empty-state">Vous n'avez accepté aucune demande pour le moment.</p>
+  } @else {
+    <ul class="requests">
+      @for (r of requests(); track r.id) {
+        <li class="request-card">
+          <span class="material">{{ r.materialTypeCode }}</span>
+          <span class="address">{{ r.addressText }}</span>
+          <app-status-badge [status]="r.status" />
+          @if (r.status === 'ACCEPTED') {
+            <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="schedule(r.id)">
+              Planifier
+            </button>
+          } @else if (r.status === 'SCHEDULED') {
+            <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="complete(r.id)">
+              Marquer terminée
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

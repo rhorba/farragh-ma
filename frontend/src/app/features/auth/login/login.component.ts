@@ -46,6 +46,8 @@ export class LoginComponent {
     const role = this.authService.role();
     if (role === 'RECYCLER') {
       this.router.navigate(['/recycler']);
+    } else if (role === 'ADMIN') {
+      this.router.navigate(['/admin']);
     } else {
       this.router.navigate([role === 'HOUSEHOLD_SME' ? '/requests' : '/']);
     }

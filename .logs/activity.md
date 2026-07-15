@@ -104,3 +104,27 @@ Added status-badge.component.spec.ts (5 status-label cases), login.component.spe
 
 ## 2026-07-15 — EXECUTE: Batch 2 complete
 Added new-request.component.spec.ts (4 tests), request-list.component.spec.ts (4 tests), request-detail.component.spec.ts (6 tests, incl. ActivatedRoute mock for the paramMap-based id read). Full suite: 13 files, 48/48 tests green. All 6 previously-untested Sprint 2 components now have specs.
+
+## 2026-07-15 — SHIP
+Pushed to origin/main: 919d191 (backend: 5fcde79 -> 919d191). CI run 29392608926 GREEN (backend, frontend, security, build all passed; release-coverage-gate skipped as expected - only runs on release tags). PUSH logged per mandatory sprint-end rule.
+
+## 2026-07-15 — EXECUTE: Sprint 4 Batch 1 complete (Story 4.1 backend)
+Added status state machine: RecyclersService.schedule()/complete() using the same conditional-atomic-UPDATE pattern as Sprint 3's accept() (PickupRequestRepository.scheduleIfAccepted/completeIfScheduled, WHERE status+ownership match). New endpoints: GET /api/v1/recyclers/requests (list accepted-by-me), POST /api/v1/recyclers/requests/{id}/schedule, POST /api/v1/recyclers/requests/{id}/complete. Ownership check reuses the existing 404-not-403 IDOR pattern. Added 4 tests to RecyclersControllerTest (happy path full lifecycle, skip-ahead rejected 409, never-accepted rejected 404, cross-recycler intrusion rejected 404). Backend suite: 20/20 green.
+
+## 2026-07-15 — EXECUTE: Sprint 4 Batch 2 complete (Story 4.2 backend)
+Added notifications/ package: EmailSender interface, SmtpEmailSender (JavaMailSender-backed), NotificationService with @Async notifyRequestAccepted/notifyRequestCompleted (failures logged and swallowed - must never affect the transition that triggered them, per System Design's "no queue" decision). Wired into RecyclersService.accept() and complete() (not schedule() - story scope is ACCEPTED/COMPLETED only). 3 new unit tests (Mockito-mocked EmailSender, no real SMTP).
+Caught and fixed a real bug before it shipped: the Sprint-1 comment said to flip management.health.mail.enabled=true in Sprint 4, but doing so would make /actuator/health return 503 DOWN in every environment (no real SMTP configured in dev/CI/docker-compose), breaking the docker-compose healthcheck that gates container startup. Left disabled, replaced the stale comment with the actual reasoning.
+Backend suite: 39/39 green.
+
+## 2026-07-15 — EXECUTE: Sprint 4 Batch 3 complete (admin preview, pulled forward from Story 5.2)
+Added admin/ package: AdminController (GET /api/v1/admin/users, GET /api/v1/admin/requests, both @PreAuthorize hasRole('ADMIN')), AdminService with pageable search (UserRepository.search/PickupRequestRepository.search - optional email/role/status filters via JPQL). Read-only, no deactivate (stays Story 5.3/Sprint 5).
+Security finding caught and fixed in the same batch: POST /auth/register accepted role=ADMIN from any caller (frontend hides it, backend never enforced it) - a live privilege-escalation hole that became actually exploitable the moment real ADMIN-gated endpoints existed. Fixed in AuthService.register() - ADMIN is now rejected server-side (403 ADMIN_SELF_REGISTRATION_NOT_ALLOWED), matching the security doc's Elevation-of-Privilege requirement. Added a regression test.
+Backend suite: 44/44 green.
+
+## 2026-07-15 — EXECUTE: Sprint 4 Batch 4 complete (recycler "My Accepted Requests" UI)
+Added AcceptedRequestsComponent (frontend/src/app/features/recyclers/accepted/) with Planifier/Marquer terminée action buttons driven by request status (ACCEPTED->schedule, SCHEDULED->complete, no action for COMPLETED/CANCELLED - server already guards invalid transitions with 409). Wired route /recycler/accepted, cross-nav links between feed<->accepted pages. Extended RecyclersService (frontend) with listAccepted/schedule/complete. 7 new spec tests. Frontend suite: 14 files, 55/55 green, lint clean, coverage 90.44% statements / 94.62% lines (still clear of 80% gate).
+
+## 2026-07-15 — EXECUTE: Sprint 4 Batch 5 complete (admin preview UI)
+Added AdminSearchComponent (frontend/src/app/features/admin/search/) - two independent filter panels (users by email/role, requests by status), read-only result tables. AdminService + admin.models.ts (AdminUserDto, PageResponse<T>). New adminGuard (mirrors recyclerGuard pattern) + route /admin.
+Follow-on fix from the same bug class Sprint 3 caught for RECYCLER: login.component.ts's redirectAfterAuth() sent ADMIN into the else-branch (-> '/' -> redirects to /login, infinite loop) since there was previously no admin destination. Fixed now that /admin exists. MUNICIPALITY has the same latent issue but is out of scope (Sprint 6 territory, pre-existing, not touched this sprint).
+Frontend suite: 16 files, 63/63 green, lint clean, coverage 90.94% statements / 94.74% lines.

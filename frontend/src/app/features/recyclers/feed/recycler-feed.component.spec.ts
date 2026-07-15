@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RecyclerFeedComponent } from './recycler-feed.component';
@@ -25,7 +26,7 @@ describe('RecyclerFeedComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RecyclerFeedComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     });
     const fixture = TestBed.createComponent(RecyclerFeedComponent);
     component = fixture.componentInstance;

@@ -30,6 +30,13 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+        if (request.role() == Role.ADMIN) {
+            // Security doc §"Elevation of Privilege": roles are set server-side, never client-supplied.
+            // ADMIN is deliberately excluded from the public register form; enforce it here too, since
+            // the DTO itself accepts any Role and a direct API call could otherwise self-elevate.
+            throw new BusinessException(HttpStatus.FORBIDDEN, "ADMIN_SELF_REGISTRATION_NOT_ALLOWED",
+                    "The ADMIN role cannot be self-registered.");
+        }
         if (userRepository.existsByEmail(request.email())) {
             throw new BusinessException(HttpStatus.CONFLICT, "EMAIL_ALREADY_REGISTERED", "An account with this email already exists.");
         }

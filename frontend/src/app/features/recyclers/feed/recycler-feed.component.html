@@ -1,5 +1,8 @@
 <div class="recycler-feed-page">
-  <h1>Demandes correspondantes</h1>
+  <div class="header">
+    <h1>Demandes correspondantes</h1>
+    <a mat-button routerLink="/recycler/accepted">Mes demandes acceptées</a>
+  </div>
 
   @if (acceptError(); as error) {
     <p class="error">{{ error }}</p>

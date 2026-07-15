@@ -38,3 +38,13 @@ Whole-project frontend coverage (was ~18% before this sprint, only auth/* + app.
 Gate: >= 80% combined unit+integration — PASSED (all four metrics clear).
 Test files: 13 (was 7), Tests: 48 (was 34 before this sprint, 19 before Sprint 3). Lint: clean.
 Remaining known gap (pre-existing, not in this sprint's scope): recycler-feed.component.html template coverage still low (24.39%) - Sprint 3's own spec asserts on component signals but doesn't call fixture.detectChanges() post-flush, same pattern this sprint fixed elsewhere. Small follow-up if the whole-project number needs to climb further.
+
+## 2026-07-15 — SPRINT_SNAPSHOT: Sprint 4 (Lifecycle & Notifications + admin preview)
+Backend: 44/44 tests green. Jacoco: instruction 90.29%, line 92.25%, branch 68.48% (branch % not the gating metric, consistent with Sprint 3's convention - instruction/line clear the 80% combined gate).
+Frontend: 63/63 tests green, lint clean. Coverage: 90.94% statements / 94.74% lines (whole-project, gate cleared).
+Adversarial checklist (Auth + Recycler-ownership items, since this sprint touched both - Zone matching/Payment untouched, not re-reviewed):
+  - IDOR: recycler cannot schedule/complete a request outside their own accepted-request ownership - covered (2 tests).
+  - Role escalation: public self-registration as ADMIN rejected server-side - covered (1 test, new finding+fix this sprint).
+  - Role escalation: non-admin cannot call admin endpoints - covered (2 tests, both directions).
+  - Race/double-submit on schedule/complete: same atomic-UPDATE-with-WHERE-status-guard pattern as Sprint 3's accept() - structurally safe by construction, no new test added (YAGNI - identical mechanism already race-tested for accept()).
+Release gate criteria (per Test Strategy §5) not fully applicable this sprint - full E2E/RTL gate is Sprint 7 scope; this snapshot covers what's in-scope now.

@@ -33,4 +33,16 @@ export class RecyclersService {
   accept(id: string): Observable<RequestResponseDto> {
     return this.http.post<RequestResponseDto>(`${this.baseUrl}/feed/${id}/accept`, {});
   }
+
+  listAccepted(): Observable<RequestResponseDto[]> {
+    return this.http.get<RequestResponseDto[]>(`${this.baseUrl}/requests`);
+  }
+
+  schedule(id: string): Observable<RequestResponseDto> {
+    return this.http.post<RequestResponseDto>(`${this.baseUrl}/requests/${id}/schedule`, {});
+  }
+
+  complete(id: string): Observable<RequestResponseDto> {
+    return this.http.post<RequestResponseDto>(`${this.baseUrl}/requests/${id}/complete`, {});
+  }
 }

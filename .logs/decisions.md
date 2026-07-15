@@ -39,3 +39,6 @@ Added: RequestsControllerTest.tamperedTokenSignatureIsRejected (flips last char 
 
 ## 2026-07-15 — Coverage-closure sprint depth
 Chose Balanced approach: happy path + primary error/validation cases per component, matching the depth of Sprint 3's recycler-feed.component.spec.ts (TestBed + HttpTestingController pattern). Not doing full adversarial/unicode edge cases or re-baselining the CI gate to whole-project 80% this sprint.
+
+## 2026-07-15 — Sprint 4 scope
+Chose Comprehensive: backend (Stories 4.1 status state machine + 4.2 async email) + recycler "My Accepted Requests" UI (closes the UX-doc gap, same precedent as Sprint 2's missing auth story) + an admin preview pulled forward from Story 5.2 (search users/requests, read-only, no deactivate - that stays Story 5.3 in Sprint 5).
