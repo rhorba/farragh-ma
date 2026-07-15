@@ -48,3 +48,12 @@ Adversarial checklist (Auth + Recycler-ownership items, since this sprint touche
   - Role escalation: non-admin cannot call admin endpoints - covered (2 tests, both directions).
   - Race/double-submit on schedule/complete: same atomic-UPDATE-with-WHERE-status-guard pattern as Sprint 3's accept() - structurally safe by construction, no new test added (YAGNI - identical mechanism already race-tested for accept()).
 Release gate criteria (per Test Strategy §5) not fully applicable this sprint - full E2E/RTL gate is Sprint 7 scope; this snapshot covers what's in-scope now.
+
+## 2026-07-15 — SPRINT_SNAPSHOT: Sprint 5 (mock CMI payment)
+Backend: 48/48 tests green. Jacoco: instruction 91.56%, line 92.95%, branch 69.79% (branch % not the gating metric, same convention as prior sprints).
+Frontend: 66/66 tests green, lint clean. Coverage: 91.03% statements / 94.94% lines.
+Adversarial checklist (Payment, risk 10 per Test Strategy §2):
+  - Double-submit: sequential double-submit covered by test (app-level check-then-act, 409 on second call).
+  - Double-submit under true concurrency (two simultaneous requests racing the app-level check): not separately load-tested with a two-thread test like Sprint 3's accept() race test - mitigated by the DB's UNIQUE(pickup_request_id) constraint + saveAndFlush/catch as a second line of defense, but that fallback path itself isn't exercised by an automated test. Documented as a residual gap, same category as the Sprint 3 ST_DWithin-boundary skip.
+  - IDOR: household cannot pay for another household's request - covered.
+  - Ownership+state guard: payment before COMPLETED rejected - covered.

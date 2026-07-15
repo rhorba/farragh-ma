@@ -128,3 +128,12 @@ Added AcceptedRequestsComponent (frontend/src/app/features/recyclers/accepted/) 
 Added AdminSearchComponent (frontend/src/app/features/admin/search/) - two independent filter panels (users by email/role, requests by status), read-only result tables. AdminService + admin.models.ts (AdminUserDto, PageResponse<T>). New adminGuard (mirrors recyclerGuard pattern) + route /admin.
 Follow-on fix from the same bug class Sprint 3 caught for RECYCLER: login.component.ts's redirectAfterAuth() sent ADMIN into the else-branch (-> '/' -> redirects to /login, infinite loop) since there was previously no admin destination. Fixed now that /admin exists. MUNICIPALITY has the same latent issue but is out of scope (Sprint 6 territory, pre-existing, not touched this sprint).
 Frontend suite: 16 files, 63/63 green, lint clean, coverage 90.94% statements / 94.74% lines.
+
+## 2026-07-15 — SHIP: Sprint 4
+Pushed to origin/main: 651877d (from 919d191). CI run 29407540838 GREEN (backend, frontend, security, build all passed; release-coverage-gate skipped as expected).
+
+## 2026-07-15 — EXECUTE: Sprint 5 Batches 1-2 complete (Story 5.1, mock CMI payment)
+Batch 1 (backend): new payments/ package - PaymentGateway interface + MockCmiGateway (ADR-2, always SUCCEEDED, flat placeholder amount since no pricing model exists in the docs), Payment entity (deliberately decoupled from PickupRequest - plain UUID column, not a JPA relation, keeping payments/requests as sibling modules per architecture doc), PaymentService (ownership+status check via RequestsService.getMine(), double-submit guarded both at app level and via DB UNIQUE(pickup_request_id) constraint + saveAndFlush/catch, same "DB is source of truth" principle as Sprint 3's race guard). New endpoint POST /api/v1/requests/{id}/payment. GET /api/v1/requests/{id} now enriched with paymentStatus (composed at the controller level to avoid a RequestsService<->PaymentService circular dependency). 4 new integration tests (success, too-early, double-submit, cross-household ownership).
+Batch 2 (frontend): Pay button on request-detail (visible when COMPLETED and not yet paid), "Paiement effectué" confirmation once paid, error+retry on failure. 5 new/updated spec tests.
+Backend: 48/48 tests, coverage 91.56% instruction / 92.95% line. Frontend: 66/66 tests, lint clean, coverage 91.03% statements / 94.94% lines.
+Story 5.2 required no new work this sprint (already satisfied by Sprint 4's admin-preview pull-forward). Story 5.3 deferred per user decision.

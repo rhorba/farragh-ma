@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CreateRequestDto, RequestResponseDto } from './request.models';
+import { CreateRequestDto, PaymentResponseDto, RequestResponseDto } from './request.models';
 
 @Injectable({ providedIn: 'root' })
 export class RequestsService {
@@ -23,5 +23,9 @@ export class RequestsService {
 
   cancel(id: string): Observable<RequestResponseDto> {
     return this.http.post<RequestResponseDto>(`${this.baseUrl}/${id}/cancel`, {});
+  }
+
+  pay(id: string): Observable<PaymentResponseDto> {
+    return this.http.post<PaymentResponseDto>(`${this.baseUrl}/${id}/payment`, {});
   }
 }

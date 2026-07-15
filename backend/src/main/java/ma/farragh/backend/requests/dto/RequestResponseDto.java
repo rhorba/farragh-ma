@@ -15,6 +15,7 @@ public record RequestResponseDto(
         RequestStatus status,
         String photoUrl,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        String paymentStatus
 ) {
 }

@@ -42,3 +42,7 @@ Chose Balanced approach: happy path + primary error/validation cases per compone
 
 ## 2026-07-15 — Sprint 4 scope
 Chose Comprehensive: backend (Stories 4.1 status state machine + 4.2 async email) + recycler "My Accepted Requests" UI (closes the UX-doc gap, same precedent as Sprint 2's missing auth story) + an admin preview pulled forward from Story 5.2 (search users/requests, read-only, no deactivate - that stays Story 5.3 in Sprint 5).
+
+## 2026-07-15 — Sprint 5 scope
+Story 5.2 (admin search) already satisfied by Sprint 4's admin-preview pull-forward - no new work needed, marking done. Chose: Story 5.1 (mock payment) backend + UI (Pay button on request-detail, closes UX-doc gap like Sprint 3/4). Story 5.3 (admin deactivate, lowest "Could" priority) deferred to a later sprint to keep this sprint focused on the Must-priority item.
+No pricing model exists anywhere in the docs (PRD/database doc) - using a flat mock amount (5000 cents / 50 MAD) as a placeholder constant since Story 5.1 only requires a payment *record*, not a real pricing engine. Documented in code as a stub pending a real pricing model (out of scope, not requested).

@@ -82,6 +82,10 @@ public class RequestsService {
     }
 
     public static RequestResponseDto toDto(PickupRequest r) {
+        return toDto(r, null);
+    }
+
+    public static RequestResponseDto toDto(PickupRequest r, String paymentStatus) {
         return new RequestResponseDto(
                 r.getId(),
                 r.getMaterialType().getCode(),
@@ -92,6 +96,7 @@ public class RequestsService {
                 r.getStatus(),
                 r.getPhotoUrl(),
                 r.getCreatedAt(),
-                r.getUpdatedAt());
+                r.getUpdatedAt(),
+                paymentStatus);
     }
 }

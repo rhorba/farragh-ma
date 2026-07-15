@@ -21,12 +21,19 @@ export class RequestDetailComponent implements OnInit {
   readonly loading = signal(true);
   readonly notFound = signal(false);
   readonly cancelling = signal(false);
+  readonly paying = signal(false);
+  readonly payError = signal<string | null>(null);
 
   private readonly id = this.route.snapshot.paramMap.get('id')!;
 
   readonly canCancel = () => {
     const r = this.request();
     return r !== null && r.status !== 'COMPLETED' && r.status !== 'CANCELLED';
+  };
+
+  readonly canPay = () => {
+    const r = this.request();
+    return r !== null && r.status === 'COMPLETED' && r.paymentStatus !== 'SUCCEEDED';
   };
 
   ngOnInit(): void {
@@ -51,6 +58,24 @@ export class RequestDetailComponent implements OnInit {
       },
       error: () => {
         this.cancelling.set(false);
+      }
+    });
+  }
+
+  pay(): void {
+    this.payError.set(null);
+    this.paying.set(true);
+    this.requestsService.pay(this.id).subscribe({
+      next: (payment) => {
+        const current = this.request();
+        if (current) {
+          this.request.set({ ...current, paymentStatus: payment.status });
+        }
+        this.paying.set(false);
+      },
+      error: () => {
+        this.paying.set(false);
+        this.payError.set('Le paiement a échoué. Réessayez.');
       }
     });
   }

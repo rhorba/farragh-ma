@@ -25,4 +25,9 @@
   .error {
     color: var(--mat-sys-error, #dc2626);
   }
+
+  .paid {
+    color: var(--mat-sys-primary, #16a34a);
+    font-weight: 600;
+  }
 }

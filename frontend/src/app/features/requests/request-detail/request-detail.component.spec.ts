@@ -77,13 +77,58 @@ describe('RequestDetailComponent', () => {
     expect(fixture.nativeElement.querySelector('button')).toBeTruthy();
   });
 
-  it('hides the cancel button for a completed request', () => {
+  it('hides the cancel button for a completed request (shows Payer instead)', () => {
     const component = createComponent();
     httpMock.expectOne(detailUrl).flush({ ...sampleRequest, status: 'COMPLETED' });
     fixture.detectChanges();
 
     expect(component.canCancel()).toBe(false);
-    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+    expect(buttons.some((b) => b.textContent?.includes('Annuler'))).toBe(false);
+    expect(buttons.some((b) => b.textContent?.trim() === 'Payer')).toBe(true);
+  });
+
+  it('shows Paiement effectué instead of a Payer button once paid', () => {
+    const component = createComponent();
+    httpMock.expectOne(detailUrl).flush({ ...sampleRequest, status: 'COMPLETED', paymentStatus: 'SUCCEEDED' });
+    fixture.detectChanges();
+
+    expect(component.canPay()).toBe(false);
+    expect(fixture.nativeElement.querySelector('.paid').textContent).toContain('Paiement effectué');
+    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+    expect(buttons.some((b) => b.textContent?.trim() === 'Payer')).toBe(false);
+  });
+
+  it('pays a completed request and updates state and DOM on success', () => {
+    const component = createComponent();
+    httpMock.expectOne(detailUrl).flush({ ...sampleRequest, status: 'COMPLETED' });
+    fixture.detectChanges();
+
+    component.pay();
+    expect(component.paying()).toBe(true);
+    httpMock.expectOne(`${detailUrl}/payment`).flush({
+      id: 'p1', pickupRequestId: 'req-1', amountCents: 5000, currency: 'MAD',
+      provider: 'CMI', mode: 'MOCK', status: 'SUCCEEDED', providerRef: 'MOCK-x', createdAt: '2026-01-01T00:00:00Z'
+    });
+    fixture.detectChanges();
+
+    expect(component.request()?.paymentStatus).toBe('SUCCEEDED');
+    expect(component.paying()).toBe(false);
+    expect(fixture.nativeElement.querySelector('.paid')).toBeTruthy();
+  });
+
+  it('shows an error and keeps the Payer button when payment fails', () => {
+    const component = createComponent();
+    httpMock.expectOne(detailUrl).flush({ ...sampleRequest, status: 'COMPLETED' });
+    fixture.detectChanges();
+
+    component.pay();
+    httpMock.expectOne(`${detailUrl}/payment`).flush('conflict', { status: 409, statusText: 'Conflict' });
+    fixture.detectChanges();
+
+    expect(component.payError()).toBe('Le paiement a échoué. Réessayez.');
+    expect(component.paying()).toBe(false);
+    expect(fixture.nativeElement.querySelector('.error').textContent).toContain('échoué');
   });
 
   it('cancels the request and updates state and DOM on success', () => {

@@ -23,5 +23,17 @@
     @if (canCancel()) {
       <button mat-stroked-button color="warn" (click)="cancel()" [disabled]="cancelling()">Annuler la demande</button>
     }
+
+    @if (payError(); as error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    @if (r.status === 'COMPLETED') {
+      @if (r.paymentStatus === 'SUCCEEDED') {
+        <p class="paid">Paiement effectué.</p>
+      } @else {
+        <button mat-flat-button color="primary" [disabled]="paying()" (click)="pay()">Payer</button>
+      }
+    }
   }
 </div>

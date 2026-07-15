@@ -1,6 +1,8 @@
 package ma.farragh.backend.requests;
 
 import jakarta.validation.Valid;
+import ma.farragh.backend.payments.PaymentService;
+import ma.farragh.backend.payments.dto.PaymentResponseDto;
 import ma.farragh.backend.requests.dto.CreateRequestDto;
 import ma.farragh.backend.requests.dto.RequestResponseDto;
 import ma.farragh.backend.shared.security.CurrentUser;
@@ -18,9 +20,11 @@ import java.util.UUID;
 public class RequestsController {
 
     private final RequestsService requestsService;
+    private final PaymentService paymentService;
 
-    public RequestsController(RequestsService requestsService) {
+    public RequestsController(RequestsService requestsService, PaymentService paymentService) {
         this.requestsService = requestsService;
+        this.paymentService = paymentService;
     }
 
     @PostMapping
@@ -35,11 +39,22 @@ public class RequestsController {
 
     @GetMapping("/{id}")
     public RequestResponseDto getMine(@PathVariable UUID id) {
-        return requestsService.getMine(CurrentUser.id(), id);
+        RequestResponseDto request = requestsService.getMine(CurrentUser.id(), id);
+        String paymentStatus = paymentService.findByRequestId(id)
+                .map(p -> p.status().name())
+                .orElse(null);
+        return new RequestResponseDto(request.id(), request.materialTypeCode(), request.quantityDesc(),
+                request.addressText(), request.latitude(), request.longitude(), request.status(),
+                request.photoUrl(), request.createdAt(), request.updatedAt(), paymentStatus);
     }
 
     @PostMapping("/{id}/cancel")
     public RequestResponseDto cancel(@PathVariable UUID id) {
         return requestsService.cancel(CurrentUser.id(), id);
+    }
+
+    @PostMapping("/{id}/payment")
+    public PaymentResponseDto pay(@PathVariable UUID id) {
+        return paymentService.pay(CurrentUser.id(), id);
     }
 }
