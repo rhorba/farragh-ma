@@ -155,3 +155,4 @@ Frontend: 87/87 tests green (up from 77), lint clean, coverage 90.64% statements
 Backend: 54/54 tests green (full suite incl. new municipality module), coverage 92% instruction / 93.6% line. Frontend: 87/87 green, lint clean, 90.64%/94.56%. Both clear the 80% combined gate by a wide margin. Adversarial check for the new municipality endpoint: role-forbidden (403) and missing-geometry (400) covered by MunicipalityControllerTest; no IDOR surface (listMySubscriptions scoped to the authenticated municipality's own id only).
 
 ## 2026-07-16 — SHIP: Sprint 6
+Pushed to origin/main: 0040e36 (from df482b0). CI run 29531163465 GREEN (frontend, security, backend, build all passed; release-coverage-gate skipped as expected).

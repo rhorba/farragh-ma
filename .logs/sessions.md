@@ -97,3 +97,4 @@ Story 6.2 (FR/AR + RTL): decided with user upfront to (a) use @ngx-translate/cor
 Backend: 54/54 tests green (6 new for municipality), coverage 92%/93.6% instruction/line. Frontend: 87/87 tests green (up from 66), lint clean, coverage 90.64% statements / 94.56% lines. Both clear of the 80% gate.
 Known gaps carried forward: Story 5.3 (admin deactivate) still not built. claude-in-chrome still not connecting - browser verification of the language switch/RTL mirroring was not done visually this session, only via unit specs and CSS audit; worth a visual pass next UI-heavy session. No mvnw committed, local backend runs use cached Maven 3.9.9.
 Next: Sprint 7 (Hardening & Release) per docs/stories-farragh-marketplace.md - the final sprint, gates the release (adversarial re-check, coverage-to-80%-combined, E2E Playwright suite, video recording, prod Docker Compose deploy).
+CI confirmed green (run 29531163465) after push. Sprint 6 fully shipped.
