@@ -6,6 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { recyclerGuard } from './recycler.guard';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
+import { provideTestTranslate } from '../../testing/translate-testing';
 
 describe('recyclerGuard', () => {
   let authService: AuthService;
@@ -14,8 +15,9 @@ describe('recyclerGuard', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);

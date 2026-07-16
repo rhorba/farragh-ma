@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RecyclerProfileComponent } from './recycler-profile.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('RecyclerProfileComponent', () => {
   let component: RecyclerProfileComponent;
@@ -13,7 +14,7 @@ describe('RecyclerProfileComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RecyclerProfileComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     const fixture = TestBed.createComponent(RecyclerProfileComponent);
     component = fixture.componentInstance;

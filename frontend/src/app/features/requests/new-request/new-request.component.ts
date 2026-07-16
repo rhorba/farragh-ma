@@ -5,13 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { RequestsService } from '../requests.service';
 import { MATERIAL_TYPES } from '../request.models';
 
 @Component({
   selector: 'app-new-request',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslatePipe],
   templateUrl: './new-request.component.html',
   styleUrl: './new-request.component.scss'
 })
@@ -19,6 +20,7 @@ export class NewRequestComponent {
   private readonly fb = inject(FormBuilder);
   private readonly requestsService = inject(RequestsService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly materialTypes = MATERIAL_TYPES;
   readonly errorMessage = signal<string | null>(null);
@@ -49,7 +51,7 @@ export class NewRequestComponent {
     }).subscribe({
       next: (created) => this.router.navigate(['/requests', created.id]),
       error: () => {
-        this.errorMessage.set("Erreur lors de la publication de la demande. Réessayez.");
+        this.errorMessage.set(this.translate.instant('requests.new.genericError'));
         this.submitting.set(false);
       }
     });

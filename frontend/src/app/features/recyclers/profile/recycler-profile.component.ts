@@ -5,19 +5,21 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { forkJoin } from 'rxjs';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MATERIAL_TYPES } from '../../requests/request.models';
 import { RecyclersService } from '../recyclers.service';
 
 @Component({
   selector: 'app-recycler-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslatePipe],
   templateUrl: './recycler-profile.component.html',
   styleUrl: './recycler-profile.component.scss'
 })
 export class RecyclerProfileComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly recyclersService = inject(RecyclersService);
+  private readonly translate = inject(TranslateService);
 
   readonly materialTypes = MATERIAL_TYPES;
   readonly errorMessage = signal<string | null>(null);
@@ -71,11 +73,11 @@ export class RecyclerProfileComponent implements OnInit {
       this.recyclersService.declareMaterials({ materialTypeCodes: value.materialTypeCodes })
     ]).subscribe({
       next: () => {
-        this.successMessage.set('Profil mis à jour.');
+        this.successMessage.set(this.translate.instant('recyclers.profile.success'));
         this.submitting.set(false);
       },
       error: () => {
-        this.errorMessage.set('Erreur lors de la mise à jour du profil. Réessayez.');
+        this.errorMessage.set(this.translate.instant('recyclers.profile.error'));
         this.submitting.set(false);
       }
     });

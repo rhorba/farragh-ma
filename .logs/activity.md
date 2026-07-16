@@ -140,3 +140,18 @@ Story 5.2 required no new work this sprint (already satisfied by Sprint 4's admi
 
 ## 2026-07-15 — SHIP: Sprint 5
 Pushed to origin/main: cac13cd (from 651877d). CI run 29439195094 GREEN (backend, frontend, security, build all passed; release-coverage-gate skipped as expected).
+
+## 2026-07-16 — Sprint 6 Story 6.1 complete
+Municipality bulk-subscribe (backend + frontend) done: BulkSubscription entity/service/controller, ST_Intersects/ST_DWithin overlap-warning-then-confirm flow, CoverageZone moved from recyclers to shared/geo (now used by two feature modules per architecture doc's no-cross-module-repo-access rule), ZoneGeometryValidator extracted for reuse. Fixed MUNICIPALITY login/register redirect gap (previously fell to '/' and looped, same class of bug fixed for RECYCLER/ADMIN in Sprints 3/4) - this also required updating a pre-existing register.component.spec.ts test that had encoded the buggy behavior as expected. Added preferredLang to AuthResponse (backend + frontend) since it was already stored on User from Sprint 1 but never returned to the client - needed for Story 6.2's language seeding on login.
+Backend: 6 new municipality tests + all 20 recyclers tests green after the CoverageZone move. Frontend: 77/77 tests green (was 66), lint clean.
+Next: Story 6.2 (i18n infra with ngx-translate, then full retrofit of all existing screens to FR/AR + RTL verification per Test Strategy gate).
+
+## 2026-07-16 — EXECUTE: Sprint 6 Story 6.2 complete (i18n + RTL)
+Installed @ngx-translate/core (not http-loader - built a StaticTranslateLoader instead, since translations are a small fixed developer-maintained set; avoids an HTTP round trip and keeps prod/test behavior identical, no HttpTestingController flushing needed per spec). LanguageService (signals-based, persists to localStorage, seeds from server preferredLang on login/register) + LanguageSwitcherComponent in a new app-shell header, wired to the app root via CDK's `Dir` directive on `[dir]` so Directionality cascades to every descendant Material component.
+Full retrofit: every existing screen (auth, requests, recyclers, municipality, admin) plus shared status-badge and material-type labels converted from hardcoded French to translation keys, split one TS file per namespace (common/status/material/auth/requests/recyclers/municipality/admin) merged in translations.ts. CSS audit of all 13 stylesheets found 2 RTL issues (back-arrow glyph, one text-align:left) - fixed; rest already flexbox-based/direction-agnostic. Added a shared testing helper (provideTestTranslate) so every spec touching translated components/AuthService gets the same static loader without HTTP flushing.
+Frontend: 87/87 tests green (up from 77), lint clean, coverage 90.64% statements / 94.56% lines.
+
+## 2026-07-16 — VERIFY: Sprint 6 full suite + coverage
+Backend: 54/54 tests green (full suite incl. new municipality module), coverage 92% instruction / 93.6% line. Frontend: 87/87 green, lint clean, 90.64%/94.56%. Both clear the 80% combined gate by a wide margin. Adversarial check for the new municipality endpoint: role-forbidden (403) and missing-geometry (400) covered by MunicipalityControllerTest; no IDOR surface (listMySubscriptions scoped to the authenticated municipality's own id only).
+
+## 2026-07-16 — SHIP: Sprint 6

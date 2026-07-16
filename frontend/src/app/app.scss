@@ -1,0 +1,11 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.app-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 16px;
+}

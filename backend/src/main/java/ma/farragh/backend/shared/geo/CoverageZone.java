@@ -1,4 +1,4 @@
-package ma.farragh.backend.recyclers;
+package ma.farragh.backend.shared.geo;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,6 +11,12 @@ import org.locationtech.jts.geom.Polygon;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * A geographic coverage zone owned by any user - a recycler declaring where it collects,
+ * or a municipality bulk-subscribing a neighborhood. Owner-agnostic by design, so it lives in
+ * shared rather than either feature package (architecture doc: no direct cross-module
+ * repository access between recyclers and municipality).
+ */
 @Entity
 @Table(name = "coverage_zones")
 @Getter

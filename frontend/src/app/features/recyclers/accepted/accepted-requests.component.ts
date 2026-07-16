@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { RequestResponseDto } from '../../requests/request.models';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
 import { RecyclersService } from '../recyclers.service';
@@ -8,12 +9,13 @@ import { RecyclersService } from '../recyclers.service';
 @Component({
   selector: 'app-accepted-requests',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, StatusBadgeComponent],
+  imports: [RouterLink, MatButtonModule, StatusBadgeComponent, TranslatePipe],
   templateUrl: './accepted-requests.component.html',
   styleUrl: './accepted-requests.component.scss'
 })
 export class AcceptedRequestsComponent implements OnInit {
   private readonly recyclersService = inject(RecyclersService);
+  private readonly translate = inject(TranslateService);
 
   readonly requests = signal<RequestResponseDto[]>([]);
   readonly loading = signal(true);
@@ -58,7 +60,7 @@ export class AcceptedRequestsComponent implements OnInit {
       },
       error: () => {
         this.updatingId.set(null);
-        this.updateError.set("Impossible de mettre à jour cette demande. Réessayez.");
+        this.updateError.set(this.translate.instant('recyclers.accepted.updateError'));
         this.load();
       }
     });

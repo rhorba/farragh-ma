@@ -37,11 +37,11 @@ export interface RequestResponseDto {
   paymentStatus?: PaymentStatus | null;
 }
 
-export const MATERIAL_TYPES: { code: string; label: string }[] = [
-  { code: 'PLASTIC', label: 'Plastique' },
-  { code: 'METAL', label: 'Métal' },
-  { code: 'ELECTRONIC', label: 'Électronique' },
-  { code: 'ORGANIC', label: 'Organique' },
-  { code: 'PAPER', label: 'Papier' },
-  { code: 'GLASS', label: 'Verre' }
+export const MATERIAL_TYPES: { code: string }[] = [
+  { code: 'PLASTIC' },
+  { code: 'METAL' },
+  { code: 'ELECTRONIC' },
+  { code: 'ORGANIC' },
+  { code: 'PAPER' },
+  { code: 'GLASS' }
 ];

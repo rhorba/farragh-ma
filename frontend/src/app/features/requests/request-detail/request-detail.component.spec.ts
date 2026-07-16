@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RequestDetailComponent } from './request-detail.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('RequestDetailComponent', () => {
   let httpMock: HttpTestingController;
@@ -30,6 +31,7 @@ describe('RequestDetailComponent', () => {
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideTestTranslate(),
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: convertToParamMap({ id: 'req-1' }) } }
@@ -54,7 +56,7 @@ describe('RequestDetailComponent', () => {
     expect(component.loading()).toBe(false);
     expect(component.notFound()).toBe(false);
     expect(component.request()).toEqual(sampleRequest);
-    expect(fixture.nativeElement.querySelector('h1').textContent).toBe('PLASTIC');
+    expect(fixture.nativeElement.querySelector('h1').textContent).toBe('Plastique');
     expect(fixture.nativeElement.textContent).toContain('5kg');
   });
 

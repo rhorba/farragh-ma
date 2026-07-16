@@ -5,13 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Role } from '../../../core/auth/auth.models';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslatePipe],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -19,14 +20,15 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly errorMessage = signal<string | null>(null);
   readonly submitting = signal(false);
 
-  readonly roles: { value: Role; label: string }[] = [
-    { value: 'HOUSEHOLD_SME', label: 'Ménage / PME' },
-    { value: 'RECYCLER', label: 'Recycleur certifié' },
-    { value: 'MUNICIPALITY', label: 'Municipalité' }
+  readonly roles: { value: Role; labelKey: string }[] = [
+    { value: 'HOUSEHOLD_SME', labelKey: 'auth.register.roleHousehold' },
+    { value: 'RECYCLER', labelKey: 'auth.register.roleRecycler' },
+    { value: 'MUNICIPALITY', labelKey: 'auth.register.roleMunicipality' }
   ];
 
   readonly form = this.fb.nonNullable.group({
@@ -47,7 +49,7 @@ export class RegisterComponent {
     this.authService.register(this.form.getRawValue()).subscribe({
       next: () => this.redirectAfterAuth(),
       error: () => {
-        this.errorMessage.set("Impossible de créer le compte. Vérifiez vos informations.");
+        this.errorMessage.set(this.translate.instant('auth.register.genericError'));
         this.submitting.set(false);
       }
     });
@@ -57,6 +59,8 @@ export class RegisterComponent {
     const role = this.authService.role();
     if (role === 'RECYCLER') {
       this.router.navigate(['/recycler']);
+    } else if (role === 'MUNICIPALITY') {
+      this.router.navigate(['/municipality']);
     } else {
       this.router.navigate([role === 'HOUSEHOLD_SME' ? '/requests' : '/']);
     }

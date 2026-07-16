@@ -57,3 +57,13 @@ Adversarial checklist (Payment, risk 10 per Test Strategy §2):
   - Double-submit under true concurrency (two simultaneous requests racing the app-level check): not separately load-tested with a two-thread test like Sprint 3's accept() race test - mitigated by the DB's UNIQUE(pickup_request_id) constraint + saveAndFlush/catch as a second line of defense, but that fallback path itself isn't exercised by an automated test. Documented as a residual gap, same category as the Sprint 3 ST_DWithin-boundary skip.
   - IDOR: household cannot pay for another household's request - covered.
   - Ownership+state guard: payment before COMPLETED rejected - covered.
+
+## 2026-07-16 — SPRINT_SNAPSHOT: Sprint 6 (Municipality & i18n/RTL)
+Backend: 54/54 tests green (6 new for municipality bulk-subscribe). Jacoco: instruction 92%, line 93.6% (whole-project, gate cleared).
+Frontend: 87/87 tests green (up from 66), lint clean. Coverage: 90.64% statements / 94.56% lines.
+Adversarial checklist (Municipality endpoint, new this sprint):
+  - Role check: non-MUNICIPALITY role forbidden on POST/GET /api/v1/municipality/subscriptions - covered (403 test).
+  - Input validation: missing zone geometry rejected - covered (400 test, reuses the same ZoneGeometryValidator path already adversarially tested for recyclers).
+  - IDOR: not applicable - listMySubscriptions is scoped to the authenticated municipality's own id server-side, no id parameter accepted from the client.
+  - Overlap detection correctness: same-zone re-submission (radius-vs-radius) and cross-type (polygon-vs-radius) overlap both covered by tests.
+RTL gate (Test Strategy §UI RTL strategy): CSS-audited all 13 component stylesheets - 2 real issues found and fixed (directional glyph, one text-align:left), rest already flexbox/logical-property safe. No literal "bottom nav" component exists in the codebase to test (wireframe-only, never built) - the new language-switcher header stood in for it. Full E2E dir=ltr/rtl visual verification deferred - claude-in-chrome still not connecting this session, only unit-spec + CSS-level verification done.

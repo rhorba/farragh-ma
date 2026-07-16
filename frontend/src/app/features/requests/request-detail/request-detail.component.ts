@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { RequestsService } from '../requests.service';
 import { RequestResponseDto } from '../request.models';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
@@ -9,13 +10,14 @@ import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, StatusBadgeComponent, DatePipe],
+  imports: [RouterLink, MatButtonModule, StatusBadgeComponent, DatePipe, TranslatePipe],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.scss'
 })
 export class RequestDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly requestsService = inject(RequestsService);
+  private readonly translate = inject(TranslateService);
 
   readonly request = signal<RequestResponseDto | null>(null);
   readonly loading = signal(true);
@@ -75,7 +77,7 @@ export class RequestDetailComponent implements OnInit {
       },
       error: () => {
         this.paying.set(false);
-        this.payError.set('Le paiement a échoué. Réessayez.');
+        this.payError.set(this.translate.instant('requests.detail.payError'));
       }
     });
   }

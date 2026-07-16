@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { StatusBadgeComponent } from './status-badge.component';
 import { RequestStatus } from '../../features/requests/request.models';
+import { provideTestTranslate } from '../../testing/translate-testing';
 
 describe('StatusBadgeComponent', () => {
   function createWithStatus(status: RequestStatus) {
@@ -11,7 +13,7 @@ describe('StatusBadgeComponent', () => {
   }
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [StatusBadgeComponent] });
+    TestBed.configureTestingModule({ imports: [StatusBadgeComponent], providers: [provideTestTranslate()] });
   });
 
   const cases: [RequestStatus, string][] = [
@@ -30,5 +32,16 @@ describe('StatusBadgeComponent', () => {
     expect(span.textContent?.trim()).toBe(expectedLabel);
     expect(span.classList.contains(status)).toBe(true);
     expect(span.getAttribute('aria-label')).toBe(expectedLabel);
+  });
+
+  it('re-renders with the Arabic label when the language switches', () => {
+    const fixture = createWithStatus('ACCEPTED');
+    const translate = TestBed.inject(TranslateService);
+
+    translate.use('ar');
+    fixture.detectChanges();
+
+    const span: HTMLElement = fixture.nativeElement.querySelector('span.status-badge');
+    expect(span.textContent?.trim()).toBe('مقبولة');
   });
 });

@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest, Role } from './auth.models';
+import { LanguageService } from '../i18n/language.service';
 
 const STORAGE_KEY = 'farragh_auth';
 
@@ -21,6 +22,7 @@ export class AuthService {
   readonly accessToken = computed(() => this.authState()?.accessToken ?? null);
 
   private readonly http = inject(HttpClient);
+  private readonly languageService = inject(LanguageService);
 
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/register`, request)
@@ -42,6 +44,7 @@ export class AuthService {
     this.authState.set(stored);
     // sessionStorage (not localStorage): cleared when the tab closes, limiting the token's XSS-exposure window (Security Baseline doc §5).
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    this.languageService.seedFromServer(response.preferredLang);
   }
 
   private readFromStorage(): StoredAuth | null {

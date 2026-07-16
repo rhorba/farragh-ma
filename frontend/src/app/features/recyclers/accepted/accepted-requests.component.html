@@ -1,7 +1,7 @@
 <div class="accepted-requests-page">
   <div class="header">
-    <h1>Mes demandes acceptées</h1>
-    <a mat-button routerLink="/recycler/feed">Fil des demandes</a>
+    <h1>{{ 'recyclers.accepted.title' | translate }}</h1>
+    <a mat-button routerLink="/recycler/feed">{{ 'recyclers.accepted.feedLink' | translate }}</a>
   </div>
 
   @if (updateError(); as error) {
@@ -9,25 +9,28 @@
   }
 
   @if (loading()) {
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   } @else if (loadError()) {
-    <p class="error">Impossible de charger vos demandes. <button mat-button (click)="load()">Réessayer</button></p>
+    <p class="error">
+      {{ 'recyclers.accepted.loadError' | translate }}
+      <button mat-button (click)="load()">{{ 'common.retry' | translate }}</button>
+    </p>
   } @else if (requests().length === 0) {
-    <p class="empty-state">Vous n'avez accepté aucune demande pour le moment.</p>
+    <p class="empty-state">{{ 'recyclers.accepted.empty' | translate }}</p>
   } @else {
     <ul class="requests">
       @for (r of requests(); track r.id) {
         <li class="request-card">
-          <span class="material">{{ r.materialTypeCode }}</span>
+          <span class="material">{{ 'material.' + r.materialTypeCode | translate }}</span>
           <span class="address">{{ r.addressText }}</span>
           <app-status-badge [status]="r.status" />
           @if (r.status === 'ACCEPTED') {
             <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="schedule(r.id)">
-              Planifier
+              {{ 'recyclers.accepted.schedule' | translate }}
             </button>
           } @else if (r.status === 'SCHEDULED') {
             <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="complete(r.id)">
-              Marquer terminée
+              {{ 'recyclers.accepted.complete' | translate }}
             </button>
           }
         </li>

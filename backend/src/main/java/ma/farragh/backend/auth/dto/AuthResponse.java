@@ -8,6 +8,7 @@ public record AuthResponse(
         String accessToken,
         String refreshToken,
         UUID userId,
-        Role role
+        Role role,
+        String preferredLang
 ) {
 }

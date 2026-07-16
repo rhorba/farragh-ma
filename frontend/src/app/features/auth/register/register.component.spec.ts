@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RegisterComponent } from './register.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -15,9 +16,10 @@ describe('RegisterComponent', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       imports: [RegisterComponent],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -56,7 +58,7 @@ describe('RegisterComponent', () => {
     expect(fixture.nativeElement.querySelector('mat-error').textContent).toContain('10 caractères');
   });
 
-  it('registers a municipality user and redirects to /', () => {
+  it('registers a municipality user and redirects to /municipality', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.setValue({
       email: 'muni@example.com',
@@ -70,7 +72,7 @@ describe('RegisterComponent', () => {
     httpMock.expectOne(registerUrl)
       .flush({ accessToken: 'token-abc', refreshToken: 'refresh-abc', userId: 'u3', role: 'MUNICIPALITY' });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/municipality']);
   });
 
   it('registers a recycler user and redirects to /recycler', () => {

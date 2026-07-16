@@ -1,41 +1,48 @@
 <div class="admin-search-page">
-  <h1>Administration</h1>
+  <h1>{{ 'admin.title' | translate }}</h1>
 
   <section class="panel">
-    <h2>Utilisateurs</h2>
+    <h2>{{ 'admin.usersSection' | translate }}</h2>
     <form [formGroup]="userFilterForm" (ngSubmit)="searchUsers()" class="filters">
       <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
+        <mat-label>{{ 'admin.emailLabel' | translate }}</mat-label>
         <input matInput formControlName="email" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Rôle</mat-label>
+        <mat-label>{{ 'admin.roleLabel' | translate }}</mat-label>
         <mat-select formControlName="role">
-          <mat-option value="">Tous</mat-option>
+          <mat-option value="">{{ 'admin.allOption' | translate }}</mat-option>
           @for (r of roles; track r) {
-            <mat-option [value]="r">{{ r }}</mat-option>
+            <mat-option [value]="r">{{ 'admin.role.' + r | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
-      <button mat-flat-button color="primary" type="submit" [disabled]="usersLoading()">Rechercher</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="usersLoading()">
+        {{ 'admin.searchButton' | translate }}
+      </button>
     </form>
 
     @if (usersLoading()) {
-      <p>Chargement...</p>
+      <p>{{ 'common.loading' | translate }}</p>
     } @else if (usersSearched() && users().length === 0) {
-      <p class="empty-state">Aucun utilisateur trouvé.</p>
+      <p class="empty-state">{{ 'admin.noUsersFound' | translate }}</p>
     } @else if (users().length > 0) {
       <table class="results">
         <thead>
-          <tr><th>Email</th><th>Rôle</th><th>Nom</th><th>Actif</th></tr>
+          <tr>
+            <th>{{ 'admin.colEmail' | translate }}</th>
+            <th>{{ 'admin.colRole' | translate }}</th>
+            <th>{{ 'admin.colName' | translate }}</th>
+            <th>{{ 'admin.colActive' | translate }}</th>
+          </tr>
         </thead>
         <tbody>
           @for (u of users(); track u.id) {
             <tr>
               <td>{{ u.email }}</td>
-              <td>{{ u.role }}</td>
+              <td>{{ 'admin.role.' + u.role | translate }}</td>
               <td>{{ u.fullName }}</td>
-              <td>{{ u.active ? 'Oui' : 'Non' }}</td>
+              <td>{{ (u.active ? 'admin.yes' : 'admin.no') | translate }}</td>
             </tr>
           }
         </tbody>
@@ -44,33 +51,39 @@
   </section>
 
   <section class="panel">
-    <h2>Demandes</h2>
+    <h2>{{ 'admin.requestsSection' | translate }}</h2>
     <form [formGroup]="requestFilterForm" (ngSubmit)="searchRequests()" class="filters">
       <mat-form-field appearance="outline">
-        <mat-label>Statut</mat-label>
+        <mat-label>{{ 'admin.statusLabel' | translate }}</mat-label>
         <mat-select formControlName="status">
-          <mat-option value="">Tous</mat-option>
+          <mat-option value="">{{ 'admin.allOption' | translate }}</mat-option>
           @for (s of statuses; track s) {
-            <mat-option [value]="s">{{ s }}</mat-option>
+            <mat-option [value]="s">{{ 'status.' + s | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
-      <button mat-flat-button color="primary" type="submit" [disabled]="requestsLoading()">Rechercher</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="requestsLoading()">
+        {{ 'admin.searchButton' | translate }}
+      </button>
     </form>
 
     @if (requestsLoading()) {
-      <p>Chargement...</p>
+      <p>{{ 'common.loading' | translate }}</p>
     } @else if (requestsSearched() && requests().length === 0) {
-      <p class="empty-state">Aucune demande trouvée.</p>
+      <p class="empty-state">{{ 'admin.noRequestsFound' | translate }}</p>
     } @else if (requests().length > 0) {
       <table class="results">
         <thead>
-          <tr><th>Matériau</th><th>Adresse</th><th>Statut</th></tr>
+          <tr>
+            <th>{{ 'admin.colMaterial' | translate }}</th>
+            <th>{{ 'admin.colAddress' | translate }}</th>
+            <th>{{ 'admin.colStatus' | translate }}</th>
+          </tr>
         </thead>
         <tbody>
           @for (r of requests(); track r.id) {
             <tr>
-              <td>{{ r.materialTypeCode }}</td>
+              <td>{{ 'material.' + r.materialTypeCode | translate }}</td>
               <td>{{ r.addressText }}</td>
               <td><app-status-badge [status]="r.status" /></td>
             </tr>

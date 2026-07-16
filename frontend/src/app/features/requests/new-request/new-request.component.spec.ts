@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { NewRequestComponent } from './new-request.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('NewRequestComponent', () => {
   let component: NewRequestComponent;
@@ -16,7 +17,7 @@ describe('NewRequestComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NewRequestComponent],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     fixture = TestBed.createComponent(NewRequestComponent);
     component = fixture.componentInstance;

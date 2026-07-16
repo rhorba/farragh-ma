@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { recyclerGuard } from './core/auth/recycler.guard';
 import { adminGuard } from './core/auth/admin.guard';
+import { municipalityGuard } from './core/auth/municipality.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -61,5 +62,13 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/search/admin-search.component').then((m) => m.AdminSearchComponent)
+  },
+  {
+    path: 'municipality',
+    canActivate: [municipalityGuard],
+    loadComponent: () =>
+      import('./features/municipality/subscriptions/municipality-subscriptions.component').then(
+        (m) => m.MunicipalitySubscriptionsComponent
+      )
   }
 ];

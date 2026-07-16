@@ -1,14 +1,14 @@
 <div class="auth-page">
-  <h1>Connexion</h1>
+  <h1>{{ 'auth.login.title' | translate }}</h1>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'auth.login.emailLabel' | translate }}</mat-label>
       <input matInput type="email" formControlName="email" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Mot de passe</mat-label>
+      <mat-label>{{ 'auth.login.passwordLabel' | translate }}</mat-label>
       <input matInput type="password" formControlName="password" />
     </mat-form-field>
 
@@ -16,8 +16,10 @@
       <p class="error">{{ errorMessage() }}</p>
     }
 
-    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Se connecter</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+      {{ 'auth.login.submit' | translate }}
+    </button>
   </form>
 
-  <p>Pas encore de compte ? <a routerLink="/register">S'inscrire</a></p>
+  <p>{{ 'auth.login.noAccount' | translate }} <a routerLink="/register">{{ 'auth.login.signUpLink' | translate }}</a></p>
 </div>

@@ -19,4 +19,5 @@ export interface AuthResponse {
   refreshToken: string;
   userId: string;
   role: Role;
+  preferredLang?: 'fr' | 'ar';
 }

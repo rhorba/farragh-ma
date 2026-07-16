@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RequestListComponent } from './request-list.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('RequestListComponent', () => {
   let component: RequestListComponent;
@@ -27,7 +28,7 @@ describe('RequestListComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RequestListComponent],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     fixture = TestBed.createComponent(RequestListComponent);
     component = fixture.componentInstance;

@@ -5,6 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
+import { provideTestTranslate } from '../../testing/translate-testing';
 
 describe('authInterceptor', () => {
   let http: HttpClient;
@@ -13,11 +14,13 @@ describe('authInterceptor', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         provideHttpClient(withInterceptors([authInterceptor])),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        provideTestTranslate()
       ]
     });
     http = TestBed.inject(HttpClient);

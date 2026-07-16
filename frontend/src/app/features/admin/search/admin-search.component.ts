@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslatePipe } from '@ngx-translate/core';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
 import { RequestResponseDto, RequestStatus } from '../../requests/request.models';
 import { AdminService } from '../admin.service';
@@ -15,7 +16,15 @@ const STATUSES: RequestStatus[] = ['POSTED', 'ACCEPTED', 'SCHEDULED', 'COMPLETED
 @Component({
   selector: 'app-admin-search',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, StatusBadgeComponent],
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    StatusBadgeComponent,
+    TranslatePipe
+  ],
   templateUrl: './admin-search.component.html',
   styleUrl: './admin-search.component.scss'
 })

@@ -1,4 +1,4 @@
-package ma.farragh.backend.recyclers;
+package ma.farragh.backend.shared.geo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

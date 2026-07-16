@@ -4,12 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -17,6 +18,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly errorMessage = signal<string | null>(null);
   readonly submitting = signal(false);
@@ -36,7 +38,7 @@ export class LoginComponent {
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => this.redirectAfterAuth(),
       error: () => {
-        this.errorMessage.set('Email ou mot de passe incorrect.');
+        this.errorMessage.set(this.translate.instant('auth.login.invalidCredentials'));
         this.submitting.set(false);
       }
     });
@@ -48,6 +50,8 @@ export class LoginComponent {
       this.router.navigate(['/recycler']);
     } else if (role === 'ADMIN') {
       this.router.navigate(['/admin']);
+    } else if (role === 'MUNICIPALITY') {
+      this.router.navigate(['/municipality']);
     } else {
       this.router.navigate([role === 'HOUSEHOLD_SME' ? '/requests' : '/']);
     }

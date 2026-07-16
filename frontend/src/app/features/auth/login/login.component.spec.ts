@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoginComponent } from './login.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -15,9 +16,10 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -69,6 +71,17 @@ describe('LoginComponent', () => {
       .flush({ accessToken: 'token-abc', refreshToken: 'refresh-abc', userId: 'u3', role: 'ADMIN' });
 
     expect(navigateSpy).toHaveBeenCalledWith(['/admin']);
+  });
+
+  it('redirects municipality users to /municipality', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    component.form.setValue({ email: 'muni@example.com', password: 'secret1234' });
+
+    component.submit();
+    httpMock.expectOne(loginUrl)
+      .flush({ accessToken: 'token-abc', refreshToken: 'refresh-abc', userId: 'u4', role: 'MUNICIPALITY' });
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/municipality']);
   });
 
   it('sets an error message and resets submitting when login fails', () => {

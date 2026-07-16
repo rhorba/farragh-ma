@@ -30,4 +30,12 @@
     color: var(--mat-sys-primary, #16a34a);
     font-weight: 600;
   }
+
+  .back-arrow {
+    display: inline-block;
+  }
+
+  :host-context([dir='rtl']) .back-arrow {
+    transform: scaleX(-1);
+  }
 }

@@ -1,13 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RequestStatus } from '../../features/requests/request.models';
-
-const LABELS_FR: Record<RequestStatus, string> = {
-  POSTED: 'Publiée',
-  ACCEPTED: 'Acceptée',
-  SCHEDULED: 'Planifiée',
-  COMPLETED: 'Terminée',
-  CANCELLED: 'Annulée'
-};
 
 @Component({
   selector: 'app-status-badge',
@@ -16,6 +9,11 @@ const LABELS_FR: Record<RequestStatus, string> = {
   styleUrl: './status-badge.component.scss'
 })
 export class StatusBadgeComponent {
+  private readonly translate = inject(TranslateService);
+
   readonly status = input.required<RequestStatus>();
-  readonly label = computed(() => LABELS_FR[this.status()]);
+  readonly label = computed(() => {
+    this.translate.currentLang();
+    return this.translate.instant(`status.${this.status()}`);
+  });
 }

@@ -1,0 +1,19 @@
+.language-switcher {
+  display: flex;
+  gap: 4px;
+
+  button {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8125rem;
+
+    &.active {
+      background: var(--mat-sys-primary, #16a34a);
+      color: var(--mat-sys-on-primary, #fff);
+      border-color: var(--mat-sys-primary, #16a34a);
+    }
+  }
+}

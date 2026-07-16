@@ -1,47 +1,49 @@
 <div class="new-request-page">
-  <h1>Nouvelle demande</h1>
+  <h1>{{ 'requests.new.title' | translate }}</h1>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
-      <mat-label>Matériau</mat-label>
+      <mat-label>{{ 'requests.new.materialLabel' | translate }}</mat-label>
       <mat-select formControlName="materialTypeCode">
         @for (m of materialTypes; track m.code) {
-          <mat-option [value]="m.code">{{ m.label }}</mat-option>
+          <mat-option [value]="m.code">{{ 'material.' + m.code | translate }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Quantité (approx.)</mat-label>
-      <input matInput formControlName="quantityDesc" placeholder="ex. 2 sacs" />
+      <mat-label>{{ 'requests.new.quantityLabel' | translate }}</mat-label>
+      <input matInput formControlName="quantityDesc" [placeholder]="'requests.new.quantityPlaceholder' | translate" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Adresse</mat-label>
+      <mat-label>{{ 'requests.new.addressLabel' | translate }}</mat-label>
       <input matInput formControlName="addressText" />
       @if (form.controls.addressText.invalid && form.controls.addressText.touched) {
-        <mat-error>L'adresse est requise</mat-error>
+        <mat-error>{{ 'requests.new.addressRequired' | translate }}</mat-error>
       }
     </mat-form-field>
 
     <div class="coords">
       <mat-form-field appearance="outline">
-        <mat-label>Latitude</mat-label>
+        <mat-label>{{ 'requests.new.latLabel' | translate }}</mat-label>
         <input matInput type="number" formControlName="latitude" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Longitude</mat-label>
+        <mat-label>{{ 'requests.new.lngLabel' | translate }}</mat-label>
         <input matInput type="number" formControlName="longitude" />
       </mat-form-field>
     </div>
     @if ((form.controls.latitude.invalid || form.controls.longitude.invalid) && form.controls.latitude.touched) {
-      <mat-error>La position (latitude/longitude) est requise</mat-error>
+      <mat-error>{{ 'requests.new.positionRequired' | translate }}</mat-error>
     }
 
     @if (errorMessage()) {
       <p class="error">{{ errorMessage() }}</p>
     }
 
-    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">Publier la demande</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+      {{ 'requests.new.submit' | translate }}
+    </button>
   </form>
 </div>

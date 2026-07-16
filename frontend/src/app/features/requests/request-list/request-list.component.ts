@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RequestsService } from '../requests.service';
 import { RequestResponseDto } from '../request.models';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
@@ -8,7 +9,7 @@ import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.
 @Component({
   selector: 'app-request-list',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, StatusBadgeComponent],
+  imports: [RouterLink, MatButtonModule, StatusBadgeComponent, TranslatePipe],
   templateUrl: './request-list.component.html',
   styleUrl: './request-list.component.scss'
 })

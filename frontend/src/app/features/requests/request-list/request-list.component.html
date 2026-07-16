@@ -1,21 +1,24 @@
 <div class="request-list-page">
   <div class="header">
-    <h1>Mes demandes</h1>
-    <a mat-flat-button color="primary" routerLink="/requests/new">Nouvelle demande</a>
+    <h1>{{ 'requests.list.title' | translate }}</h1>
+    <a mat-flat-button color="primary" routerLink="/requests/new">{{ 'requests.list.newRequest' | translate }}</a>
   </div>
 
   @if (loading()) {
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   } @else if (loadError()) {
-    <p class="error">Impossible de charger vos demandes. <button mat-button (click)="load()">Réessayer</button></p>
+    <p class="error">
+      {{ 'requests.list.loadError' | translate }}
+      <button mat-button (click)="load()">{{ 'common.retry' | translate }}</button>
+    </p>
   } @else if (requests().length === 0) {
-    <p class="empty-state">Vous n'avez pas encore de demande.</p>
+    <p class="empty-state">{{ 'requests.list.empty' | translate }}</p>
   } @else {
     <ul class="requests">
       @for (r of requests(); track r.id) {
         <li>
           <a [routerLink]="['/requests', r.id]" class="request-card">
-            <span class="material">{{ r.materialTypeCode }}</span>
+            <span class="material">{{ 'material.' + r.materialTypeCode | translate }}</span>
             <span class="address">{{ r.addressText }}</span>
             <app-status-badge [status]="r.status" />
           </a>

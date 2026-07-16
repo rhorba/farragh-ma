@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AdminSearchComponent } from './admin-search.component';
 import { environment } from '../../../../environments/environment';
+import { provideTestTranslate } from '../../../testing/translate-testing';
 
 describe('AdminSearchComponent', () => {
   let component: AdminSearchComponent;
@@ -14,7 +15,7 @@ describe('AdminSearchComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AdminSearchComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
     });
     fixture = TestBed.createComponent(AdminSearchComponent);
     component = fixture.componentInstance;
