@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+# E2E fixture passwords (e2e/tests/golden-path.*.spec.ts): hardcoded strings like
+# "RecyclerPass123" used only to register brand-new, uniquely-emailed test accounts
+# (see uniqueEmail() in e2e/tests/helpers.ts) against the ephemeral CI docker-compose
+# stack. Not real credentials - flagged by gitleaks' generic-api-key rule on entropy alone.
+[allowlist]
+description = "E2E golden-path fixture passwords for ephemeral test accounts"
+paths = [
+  '''e2e/tests/golden-path\..*\.spec\.ts''',
+]
