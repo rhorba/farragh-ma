@@ -6,7 +6,7 @@
       <mat-label>{{ 'requests.new.materialLabel' | translate }}</mat-label>
       <mat-select formControlName="materialTypeCode">
         @for (m of materialTypes; track m.code) {
-          <mat-option [value]="m.code">{{ 'material.' + m.code | translate }}</mat-option>
+          <mat-option [value]="m.code" [attr.data-testid]="'material-option-' + m.code">{{ 'material.' + m.code | translate }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

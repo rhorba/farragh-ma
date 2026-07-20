@@ -24,7 +24,7 @@
           <span class="material">{{ 'material.' + r.materialTypeCode | translate }}</span>
           <span class="address">{{ r.addressText }}</span>
           <app-status-badge [status]="r.status" />
-          <button mat-flat-button color="primary" [disabled]="acceptingId() === r.id" (click)="accept(r.id)">
+          <button mat-flat-button color="primary" data-testid="accept-btn" [disabled]="acceptingId() === r.id" (click)="accept(r.id)">
             {{ 'recyclers.feed.accept' | translate }}
           </button>
         </li>

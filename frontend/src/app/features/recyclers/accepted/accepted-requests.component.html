@@ -25,11 +25,11 @@
           <span class="address">{{ r.addressText }}</span>
           <app-status-badge [status]="r.status" />
           @if (r.status === 'ACCEPTED') {
-            <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="schedule(r.id)">
+            <button mat-flat-button color="primary" data-testid="schedule-btn" [disabled]="updatingId() === r.id" (click)="schedule(r.id)">
               {{ 'recyclers.accepted.schedule' | translate }}
             </button>
           } @else if (r.status === 'SCHEDULED') {
-            <button mat-flat-button color="primary" [disabled]="updatingId() === r.id" (click)="complete(r.id)">
+            <button mat-flat-button color="primary" data-testid="complete-btn" [disabled]="updatingId() === r.id" (click)="complete(r.id)">
               {{ 'recyclers.accepted.complete' | translate }}
             </button>
           }

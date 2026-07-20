@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -53,6 +54,9 @@ class RecyclersControllerTest {
 
     @Autowired
     private ma.farragh.backend.requests.PickupRequestRepository pickupRequestRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void cleanUp() {
@@ -319,6 +323,60 @@ class RecyclersControllerTest {
         postRequest(householdToken, "METAL", 33.575, -7.59);
 
         assertThat(getFeed(recyclerToken)).hasSize(1);
+    }
+
+    /**
+     * Builds a point exactly {@code distanceMeters} due north of the center using PostGIS's own
+     * ST_Project, so the boundary tests below assert against the DB's actual geodesic math instead
+     * of a manual haversine approximation. Note: ST_Project (forward geodesic) and ST_DWithin's
+     * internal ST_Distance (inverse geodesic) are solved by different numerical methods and can
+     * disagree by a sub-millimeter epsilon at the exact same nominal distance - confirmed directly
+     * against PostGIS (a point ST_Project'd to precisely 3000m came back ST_DWithin-false at radius
+     * 3000, true at 3000.001). So the boundary is tested with a 1m margin on each side instead of
+     * bit-exact equality - the real-world granularity this checklist item cares about, without
+     * chasing sub-mm geodesic-solver noise that isn't a genuine inclusive/exclusive bug.
+     */
+    private double[] pointAtExactDistance(double centerLat, double centerLon, double distanceMeters) {
+        return jdbcTemplate.queryForObject(
+                "SELECT ST_Y(pt::geometry), ST_X(pt::geometry) FROM " +
+                        "(SELECT ST_Project(ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?, radians(0)) AS pt) t",
+                (rs, rowNum) -> new double[]{rs.getDouble(1), rs.getDouble(2)},
+                centerLon, centerLat, distanceMeters);
+    }
+
+    @Test
+    void requestJustInsideZoneRadiusBoundaryIsIncluded() {
+        String recyclerToken = registerRecyclerAndGetToken("boundary-included-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("boundary-included-household@example.com");
+        double centerLat = 33.5731, centerLon = -7.5898;
+        int radiusM = 3000;
+        declareZoneAndMaterial(recyclerToken, "PLASTIC", centerLat, centerLon, radiusM);
+
+        double[] justInside = pointAtExactDistance(centerLat, centerLon, radiusM - 1);
+        postRequest(householdToken, "PLASTIC", justInside[0], justInside[1]);
+
+        assertThat(getFeed(recyclerToken)).hasSize(1);
+    }
+
+    @Test
+    void requestJustOutsideZoneRadiusBoundaryIsExcluded() {
+        String recyclerToken = registerRecyclerAndGetToken("boundary-excluded-recycler@example.com");
+        String householdToken = registerHouseholdAndGetToken("boundary-excluded-household@example.com");
+        double centerLat = 33.5731, centerLon = -7.5898;
+        int radiusM = 3000;
+        declareZoneAndMaterial(recyclerToken, "PLASTIC", centerLat, centerLon, radiusM);
+
+        double[] justOutside = pointAtExactDistance(centerLat, centerLon, radiusM + 1);
+        postRequest(householdToken, "PLASTIC", justOutside[0], justOutside[1]);
+
+        assertThat(getFeed(recyclerToken)).isEmpty();
+    }
+
+    private void declareZoneAndMaterial(String recyclerToken, String materialCode, double centerLat, double centerLon, int radiusM) {
+        restClient.post().uri("/api/v1/recyclers/zone").header("Authorization", "Bearer " + recyclerToken)
+                .body(new DeclareZoneDto(centerLat, centerLon, radiusM, null)).exchange().expectStatus().isOk();
+        restClient.put().uri("/api/v1/recyclers/materials").header("Authorization", "Bearer " + recyclerToken)
+                .body(new DeclareMaterialsDto(List.of(materialCode))).exchange().expectStatus().isOk();
     }
 
     private void declareZoneAndMaterial(String recyclerToken, String materialCode) {

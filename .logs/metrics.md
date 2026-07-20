@@ -67,3 +67,9 @@ Adversarial checklist (Municipality endpoint, new this sprint):
   - IDOR: not applicable - listMySubscriptions is scoped to the authenticated municipality's own id server-side, no id parameter accepted from the client.
   - Overlap detection correctness: same-zone re-submission (radius-vs-radius) and cross-type (polygon-vs-radius) overlap both covered by tests.
 RTL gate (Test Strategy §UI RTL strategy): CSS-audited all 13 component stylesheets - 2 real issues found and fixed (directional glyph, one text-align:left), rest already flexbox/logical-property safe. No literal "bottom nav" component exists in the codebase to test (wireframe-only, never built) - the new language-switcher header stood in for it. Full E2E dir=ltr/rtl visual verification deferred - claude-in-chrome still not connecting this session, only unit-spec + CSS-level verification done.
+
+## 2026-07-17 — Sprint 7 Story 7.2: Coverage gate to >=80% combined
+Backend: `mvn verify -Pcoverage-gate` (JaCoCo LINE COVEREDRATIO >= 0.80 at BUNDLE level) - PASSED. 56/56 tests green. 92.25% instruction / 93.58% line coverage.
+Frontend: `npx ng test --no-watch --coverage` - 87/87 tests green, lint clean. 90.64% statements / 92.95% branch / 86.39% functions / 94.56% lines.
+Both individually well clear of the 80% gate; combined project coverage is trivially >=80%. Release gate criterion met.
+Known minor residual (not blocking, carried forward from Sprint 3/6): recycler-feed.component.html has lower template-branch coverage (67.39% lines) than the rest of the frontend - previously assessed as an optional follow-up, not re-opened as a blocking risk since whole-project gate clears comfortably.

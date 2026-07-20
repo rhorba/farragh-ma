@@ -34,7 +34,7 @@
       @if (r.paymentStatus === 'SUCCEEDED') {
         <p class="paid">{{ 'requests.detail.paid' | translate }}</p>
       } @else {
-        <button mat-flat-button color="primary" [disabled]="paying()" (click)="pay()">
+        <button mat-flat-button color="primary" data-testid="pay-btn" [disabled]="paying()" (click)="pay()">
           {{ 'requests.detail.pay' | translate }}
         </button>
       }

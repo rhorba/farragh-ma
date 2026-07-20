@@ -6,7 +6,7 @@
       <mat-label>{{ 'auth.register.roleLabel' | translate }}</mat-label>
       <mat-select formControlName="role">
         @for (r of roles; track r.value) {
-          <mat-option [value]="r.value">{{ r.labelKey | translate }}</mat-option>
+          <mat-option [value]="r.value" [attr.data-testid]="'role-option-' + r.value">{{ r.labelKey | translate }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

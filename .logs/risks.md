@@ -10,3 +10,6 @@ Action needed: schedule a dedicated task/sprint to write specs for the 6 unteste
 ## RISK — 2026-07-06 — Frontend whole-project test coverage below 80% gate — CLOSED 2026-07-15
 Closed: added specs for all 6 previously-untested Sprint 2 components (status-badge, login, register, new-request, request-list, request-detail) and tightened template-coverage on the new specs by triggering fixture.detectChanges() after signal updates. Whole-project coverage moved from ~18% to 89.65% statements / 93.85% lines - clear of the 80% gate. See .logs/metrics.md 2026-07-15 snapshot.
 Residual minor gap (not blocking): recycler-feed.component.html (Sprint 3 code) still has low template-branch coverage (24.39%) because its existing spec doesn't call detectChanges() after HTTP flush. Small, optional follow-up - not re-opening this risk for it.
+
+## RISK — 2026-07-06 (noted, never formally logged) — ST_DWithin boundary test skipped — CLOSED 2026-07-17
+The Sprint 3 session log mentioned "ST_DWithin boundary test remains intentionally skipped (documented)" but no formal risk entry existed. Closed in Sprint 7 Story 7.1: root-caused as a genuine sub-millimeter forward/inverse geodesic-solver discrepancy in PostGIS (verified directly), not a business-logic gap. Two new tests added with a 1m margin on each side of the radius boundary. See .logs/activity.md 2026-07-17.
