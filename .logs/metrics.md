@@ -73,3 +73,8 @@ Backend: `mvn verify -Pcoverage-gate` (JaCoCo LINE COVEREDRATIO >= 0.80 at BUNDL
 Frontend: `npx ng test --no-watch --coverage` - 87/87 tests green, lint clean. 90.64% statements / 92.95% branch / 86.39% functions / 94.56% lines.
 Both individually well clear of the 80% gate; combined project coverage is trivially >=80%. Release gate criterion met.
 Known minor residual (not blocking, carried forward from Sprint 3/6): recycler-feed.component.html has lower template-branch coverage (67.39% lines) than the rest of the frontend - previously assessed as an optional follow-up, not re-opened as a blocking risk since whole-project gate clears comfortably.
+
+## 2026-07-20 — RELEASE_SNAPSHOT: Sprint 7 / v1.0 SHIP-phase re-check
+Backend: `mvn verify -Pcoverage-gate` re-run post 7.3-7.5 - 56/56 tests green, 92.25% instruction / 93.58% line. Identical to the 2026-07-17 snapshot, confirming the E2E/CI/compose work added since didn't touch app source.
+Frontend: `ng lint` clean, `ng test --coverage` (Vitest runner) re-run - 87/87 tests green, 90.64% statements / 92.95% branch / 86.39% functions / 94.56% lines. Identical to the 2026-07-17 snapshot.
+Both clear of the 80% release gate. v1.0 shipped on `origin/main` @ `9c28fa2`, CI green (backend/frontend/security/build/e2e all passed).
