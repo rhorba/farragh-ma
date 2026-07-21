@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { RequestResponseDto } from '../requests/request.models';
-import { AdminUserDto, PageResponse } from './admin.models';
+import { AdminActionLogDto, AdminUserDto, PageResponse } from './admin.models';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -16,6 +16,18 @@ export class AdminService {
 
   searchRequests(status: string | null): Observable<PageResponse<RequestResponseDto>> {
     return this.http.get<PageResponse<RequestResponseDto>>(`${this.baseUrl}/requests`, { params: buildParams({ status }) });
+  }
+
+  deactivateUser(id: string): Observable<AdminUserDto> {
+    return this.http.post<AdminUserDto>(`${this.baseUrl}/users/${id}/deactivate`, {});
+  }
+
+  reactivateUser(id: string): Observable<AdminUserDto> {
+    return this.http.post<AdminUserDto>(`${this.baseUrl}/users/${id}/reactivate`, {});
+  }
+
+  getActionLog(): Observable<PageResponse<AdminActionLogDto>> {
+    return this.http.get<PageResponse<AdminActionLogDto>>(`${this.baseUrl}/action-log`);
   }
 }
 

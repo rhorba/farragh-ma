@@ -20,6 +20,7 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.authState() !== null);
   readonly role = computed(() => this.authState()?.role ?? null);
   readonly accessToken = computed(() => this.authState()?.accessToken ?? null);
+  readonly userId = computed(() => this.authState()?.userId ?? null);
 
   private readonly http = inject(HttpClient);
   private readonly languageService = inject(LanguageService);

@@ -8,6 +8,14 @@ export interface AdminUserDto {
   createdAt: string;
 }
 
+export interface AdminActionLogDto {
+  id: string;
+  adminEmail: string;
+  targetEmail: string;
+  action: 'DEACTIVATE' | 'REACTIVATE';
+  createdAt: string;
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;

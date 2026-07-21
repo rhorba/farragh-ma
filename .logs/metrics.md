@@ -78,3 +78,13 @@ Known minor residual (not blocking, carried forward from Sprint 3/6): recycler-f
 Backend: `mvn verify -Pcoverage-gate` re-run post 7.3-7.5 - 56/56 tests green, 92.25% instruction / 93.58% line. Identical to the 2026-07-17 snapshot, confirming the E2E/CI/compose work added since didn't touch app source.
 Frontend: `ng lint` clean, `ng test --coverage` (Vitest runner) re-run - 87/87 tests green, 90.64% statements / 92.95% branch / 86.39% functions / 94.56% lines. Identical to the 2026-07-17 snapshot.
 Both clear of the 80% release gate. v1.0 shipped on `origin/main` @ `9c28fa2`, CI green (backend/frontend/security/build/e2e all passed).
+
+## 2026-07-20 — Story 5.3 (admin deactivate) coverage snapshot (not yet shipped)
+Backend: 63/63 tests green (7 new), coverage 93.11% instruction / 94.49% line (up from 92.25%/93.58%).
+Frontend: 92/92 tests green (5 new/updated), lint clean, coverage 91.03% statements / 93.48% branch / 86.33% functions / 94.65% lines (up from 90.64%/94.56%).
+Both clear of the 80% gate. Not committed/pushed yet - CI not run for this work.
+
+## 2026-07-21 — Story 5.3 SHIP-phase re-check
+Backend: `mvn verify -Pcoverage-gate` re-run - all tests green, 93.18% instruction / 94.49% line (jacoco.csv). Matches the 2026-07-20 snapshot (93.11%/94.49%) within rounding, confirming no regression.
+Frontend: `ng lint` clean, `npx ng test --no-watch --coverage` re-run - 92/92 tests green, 91.03% statements / 93.48% branch / 86.33% functions / 94.65% lines. Identical to the 2026-07-20 snapshot.
+Both clear of the 80% gate. Shipped to `origin/main` this session.

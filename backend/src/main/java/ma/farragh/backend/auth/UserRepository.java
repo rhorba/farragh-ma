@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("""
             SELECT u FROM User u
-            WHERE (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))
+            WHERE (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', CAST(:email AS string), '%')))
             AND (:role IS NULL OR u.role = :role)
             ORDER BY u.createdAt DESC
             """)

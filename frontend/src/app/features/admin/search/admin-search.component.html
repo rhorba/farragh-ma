@@ -34,6 +34,7 @@
             <th>{{ 'admin.colRole' | translate }}</th>
             <th>{{ 'admin.colName' | translate }}</th>
             <th>{{ 'admin.colActive' | translate }}</th>
+            <th>{{ 'admin.colManage' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +44,17 @@
               <td>{{ 'admin.role.' + u.role | translate }}</td>
               <td>{{ u.fullName }}</td>
               <td>{{ (u.active ? 'admin.yes' : 'admin.no') | translate }}</td>
+              <td>
+                @if (u.id === currentUserId()) {
+                  <span class="empty-state">{{ 'admin.selfRow' | translate }}</span>
+                } @else {
+                  <button mat-stroked-button type="button"
+                          [disabled]="togglingUserId() === u.id"
+                          (click)="toggleActive(u)">
+                    {{ (u.active ? 'admin.deactivateButton' : 'admin.reactivateButton') | translate }}
+                  </button>
+                }
+              </td>
             </tr>
           }
         </tbody>
@@ -86,6 +98,36 @@
               <td>{{ 'material.' + r.materialTypeCode | translate }}</td>
               <td>{{ r.addressText }}</td>
               <td><app-status-badge [status]="r.status" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="panel">
+    <h2>{{ 'admin.actionLogSection' | translate }}</h2>
+    @if (actionLogLoading()) {
+      <p>{{ 'common.loading' | translate }}</p>
+    } @else if (actionLog().length === 0) {
+      <p class="empty-state">{{ 'admin.noActionLogFound' | translate }}</p>
+    } @else {
+      <table class="results">
+        <thead>
+          <tr>
+            <th>{{ 'admin.colAdmin' | translate }}</th>
+            <th>{{ 'admin.colTarget' | translate }}</th>
+            <th>{{ 'admin.colAction' | translate }}</th>
+            <th>{{ 'admin.colWhen' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of actionLog(); track entry.id) {
+            <tr>
+              <td>{{ entry.adminEmail }}</td>
+              <td>{{ entry.targetEmail }}</td>
+              <td>{{ 'admin.action.' + entry.action | translate }}</td>
+              <td>{{ entry.createdAt | date: 'short' }}</td>
             </tr>
           }
         </tbody>
