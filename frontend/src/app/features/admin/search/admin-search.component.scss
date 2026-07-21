@@ -3,6 +3,13 @@
   margin: 32px auto;
   padding: 0 16px;
 
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
   .panel {
     margin-bottom: 32px;
   }

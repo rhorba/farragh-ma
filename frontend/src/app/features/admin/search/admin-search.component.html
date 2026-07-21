@@ -1,5 +1,8 @@
 <div class="admin-search-page">
-  <h1>{{ 'admin.title' | translate }}</h1>
+  <div class="page-header">
+    <h1>{{ 'admin.title' | translate }}</h1>
+    <a mat-stroked-button routerLink="/admin/analytics">{{ 'admin.analyticsLink' | translate }}</a>
+  </div>
 
   <section class="panel">
     <h2>{{ 'admin.usersSection' | translate }}</h2>
@@ -73,6 +76,14 @@
             <mat-option [value]="s">{{ 'status.' + s | translate }}</mat-option>
           }
         </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.createdFromLabel' | translate }}</mat-label>
+        <input matInput type="date" formControlName="createdFrom" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'admin.createdToLabel' | translate }}</mat-label>
+        <input matInput type="date" formControlName="createdTo" />
       </mat-form-field>
       <button mat-flat-button color="primary" type="submit" [disabled]="requestsLoading()">
         {{ 'admin.searchButton' | translate }}

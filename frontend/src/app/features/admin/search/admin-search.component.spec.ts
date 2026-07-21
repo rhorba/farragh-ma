@@ -1,9 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { AdminSearchComponent } from './admin-search.component';
 import { environment } from '../../../../environments/environment';
 import { provideTestTranslate } from '../../../testing/translate-testing';
+
+function activatedRouteStub(queryParams: Record<string, string> = {}) {
+  return { snapshot: { queryParamMap: convertToParamMap(queryParams) } };
+}
 
 describe('AdminSearchComponent', () => {
   let component: AdminSearchComponent;
@@ -19,7 +24,13 @@ describe('AdminSearchComponent', () => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
       imports: [AdminSearchComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTestTranslate(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRouteStub() }
+      ]
     });
     fixture = TestBed.createComponent(AdminSearchComponent);
     component = fixture.componentInstance;
@@ -70,7 +81,7 @@ describe('AdminSearchComponent', () => {
   });
 
   it('searches requests by status and renders a row per result', () => {
-    component.requestFilterForm.setValue({ status: 'POSTED' });
+    component.requestFilterForm.setValue({ status: 'POSTED', createdFrom: '', createdTo: '' });
     component.searchRequests();
 
     const req = httpMock.expectOne((r) => r.url === requestsUrl);
@@ -89,6 +100,40 @@ describe('AdminSearchComponent', () => {
     const panels = fixture.nativeElement.querySelectorAll('.panel');
     const rows = panels[1].querySelectorAll('.results tbody tr');
     expect(rows).toHaveLength(1);
+  });
+
+  it('sends createdFrom/createdTo as day-start/day-end instants', () => {
+    component.requestFilterForm.setValue({ status: '', createdFrom: '2026-01-01', createdTo: '2026-01-31' });
+    component.searchRequests();
+
+    const req = httpMock.expectOne((r) => r.url === requestsUrl);
+    expect(req.request.params.get('createdFrom')).toBe('2026-01-01T00:00:00Z');
+    expect(req.request.params.get('createdTo')).toBe('2026-01-31T23:59:59Z');
+    req.flush({ content: [], totalElements: 0 });
+  });
+
+  it('prefills and auto-runs the request filter from drill-down query params', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [AdminSearchComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTestTranslate(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRouteStub({ status: 'COMPLETED', createdFrom: '2026-02-01', createdTo: '2026-02-01' }) }
+      ]
+    });
+    fixture = TestBed.createComponent(AdminSearchComponent);
+    component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    httpMock.expectOne(actionLogUrl).flush({ content: [], totalElements: 0 });
+
+    expect(component.requestFilterForm.getRawValue()).toEqual({ status: 'COMPLETED', createdFrom: '2026-02-01', createdTo: '2026-02-01' });
+    const req = httpMock.expectOne((r) => r.url === requestsUrl);
+    expect(req.request.params.get('status')).toBe('COMPLETED');
+    req.flush({ content: [], totalElements: 0 });
   });
 
   it('deactivates an active user and updates the row in place', () => {
@@ -139,7 +184,13 @@ describe('AdminSearchComponent', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [AdminSearchComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideTestTranslate()]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideTestTranslate(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRouteStub() }
+      ]
     });
     fixture = TestBed.createComponent(AdminSearchComponent);
     component = fixture.componentInstance;

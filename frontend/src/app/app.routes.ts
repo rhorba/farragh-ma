@@ -60,8 +60,19 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [adminGuard],
-    loadComponent: () =>
-      import('./features/admin/search/admin-search.component').then((m) => m.AdminSearchComponent)
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'search' },
+      {
+        path: 'search',
+        loadComponent: () =>
+          import('./features/admin/search/admin-search.component').then((m) => m.AdminSearchComponent)
+      },
+      {
+        path: 'analytics',
+        loadComponent: () =>
+          import('./features/admin/analytics/admin-analytics.component').then((m) => m.AdminAnalyticsComponent)
+      }
+    ]
   },
   {
     path: 'municipality',

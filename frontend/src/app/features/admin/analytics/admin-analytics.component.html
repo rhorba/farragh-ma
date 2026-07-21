@@ -1,0 +1,129 @@
+<div class="admin-analytics-page">
+  <div class="page-header">
+    <h1>{{ 'admin.analyticsTitle' | translate }}</h1>
+    <a mat-stroked-button routerLink="/admin/search">{{ 'admin.backToSearch' | translate }}</a>
+  </div>
+
+  <form [formGroup]="filterForm" (ngSubmit)="load()" class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin.createdFromLabel' | translate }}</mat-label>
+      <input matInput type="date" formControlName="from" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin.createdToLabel' | translate }}</mat-label>
+      <input matInput type="date" formControlName="to" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'admin.granularityLabel' | translate }}</mat-label>
+      <mat-select formControlName="granularity">
+        @for (g of granularities; track g) {
+          <mat-option [value]="g">{{ 'admin.granularity.' + g | translate }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+      {{ 'admin.searchButton' | translate }}
+    </button>
+    <button mat-stroked-button type="button" (click)="exportCsv()">
+      {{ 'admin.exportCsvButton' | translate }}
+    </button>
+  </form>
+
+  @if (loading()) {
+    <p>{{ 'common.loading' | translate }}</p>
+  } @else {
+    <section class="panel stat-tile">
+      <span class="stat-label">{{ 'admin.totalInRange' | translate }}</span>
+      <span class="stat-value">{{ summary()?.total ?? 0 }}</span>
+    </section>
+
+    <section class="panel">
+      <h2>{{ 'admin.statusBreakdownSection' | translate }}</h2>
+      <div class="status-bars">
+        @for (bar of statusBars(); track bar.status) {
+          <button type="button" class="status-bar-row" (click)="drillIntoStatus(bar.status)">
+            <span class="status-bar-label">{{ statusLabel(bar.status) }}</span>
+            <span class="status-bar-track">
+              <span class="status-bar-fill" [style.width.%]="bar.widthPct" [style.background]="bar.color"></span>
+            </span>
+            <span class="status-bar-count">{{ bar.count }}</span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <h2>{{ 'admin.timeSeriesSection' | translate }}</h2>
+        <button mat-stroked-button type="button" (click)="toggleTable()">
+          {{ (showTable() ? 'admin.showChart' : 'admin.showTable') | translate }}
+        </button>
+      </div>
+
+      @if (timeSeries().length === 0) {
+        <p class="empty-state">{{ 'admin.noAnalyticsData' | translate }}</p>
+      } @else if (showTable()) {
+        <table class="results">
+          <thead>
+            <tr>
+              <th>{{ 'admin.colBucket' | translate }}</th>
+              <th>{{ 'admin.colCreated' | translate }}</th>
+              <th>{{ 'admin.colCompleted' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (point of timeSeries(); track point.bucket) {
+              <tr>
+                <td>{{ formatBucket(point.bucket) }}</td>
+                <td>{{ point.created }}</td>
+                <td>{{ point.completed }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="legend">
+          <span class="legend-item"><span class="swatch created"></span>{{ 'admin.legendCreated' | translate }}</span>
+          <span class="legend-item"><span class="swatch completed"></span>{{ 'admin.legendCompleted' | translate }}</span>
+        </div>
+        <svg
+          #chartSvg
+          class="trend-chart"
+          [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+          preserveAspectRatio="xMidYMid meet"
+          (mousemove)="onHover($event.clientX, chartSvg)"
+          (mouseleave)="clearHover()"
+        >
+          <line class="baseline" [attr.x1]="plotLeft" [attr.y1]="plotBottom" [attr.x2]="plotRight" [attr.y2]="plotBottom" />
+          <path class="line created" [attr.d]="createdPath()" />
+          <path class="line completed" [attr.d]="completedPath()" />
+          @for (point of createdPoints(); track $index) {
+            <circle
+              class="dot"
+              [attr.cx]="point.x"
+              [attr.cy]="point.y"
+              r="4"
+              (click)="drillIntoBucket(timeSeries()[$index])"
+            />
+          }
+          @if (hoveredIndex() !== null) {
+            <line
+              class="crosshair"
+              [attr.x1]="createdPoints()[hoveredIndex()!].x"
+              [attr.y1]="plotTop"
+              [attr.x2]="createdPoints()[hoveredIndex()!].x"
+              [attr.y2]="plotBottom"
+            />
+          }
+        </svg>
+        @if (hoveredPoint(); as hp) {
+          <div class="tooltip">
+            <strong>{{ formatBucket(hp.bucket) }}</strong>
+            <span>{{ 'admin.legendCreated' | translate }}: {{ hp.created }}</span>
+            <span>{{ 'admin.legendCompleted' | translate }}: {{ hp.completed }}</span>
+          </div>
+        }
+      }
+    </section>
+  }
+</div>

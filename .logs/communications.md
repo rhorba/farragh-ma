@@ -19,3 +19,6 @@ User chose: coverage-closure sprint (write specs for 6 untested Sprint 2 fronten
 
 ## 2026-07-17 — Sprint 7 scope confirmation
 User confirmed Story 7.5 "production deploy" means the existing local docker-compose stack (prod-like config), not a real remote host. No new env vars needed beyond what already exists in .env.example.
+
+## 2026-07-21 — UNDERSTAND: Admin analytics dashboard
+User picked, via AskUserQuestion: metric focus = request volume & status breakdown only (not user growth, zone coverage, or payments for this round); scope size = Large (drill-downs, exports, time-series). This is new scope beyond the original PRD, which explicitly listed "admin analytics dashboards beyond basic lists" as out-of-scope for v1.0 - treating as a v1.1 feature addition, not a new project (no foundation-doc chain needed, existing architecture/security/database docs still apply).

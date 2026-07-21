@@ -95,7 +95,59 @@ public interface PickupRequestRepository extends JpaRepository<PickupRequest, UU
     @Query("""
             SELECT r FROM PickupRequest r
             WHERE (:status IS NULL OR r.status = :status)
+            AND (CAST(:createdFrom AS timestamp) IS NULL OR r.createdAt >= CAST(:createdFrom AS timestamp))
+            AND (CAST(:createdTo AS timestamp) IS NULL OR r.createdAt < CAST(:createdTo AS timestamp))
             ORDER BY r.createdAt DESC
             """)
-    Page<PickupRequest> search(@Param("status") RequestStatus status, Pageable pageable);
+    Page<PickupRequest> search(@Param("status") RequestStatus status,
+                                @Param("createdFrom") Instant createdFrom,
+                                @Param("createdTo") Instant createdTo,
+                                Pageable pageable);
+
+    /**
+     * Admin analytics (Story: analytics dashboard) - status breakdown over a date range.
+     * Status returned as the raw text column rather than mapped to RequestStatus here: native-query
+     * interface projections go through Spring's ConversionService for scalar types, which is more
+     * fragile to rely on for an enum than just calling RequestStatus.valueOf() in the service.
+     */
+    @Query(value = """
+            SELECT pr.status AS status, COUNT(*) AS cnt
+            FROM pickup_requests pr
+            WHERE pr.created_at >= :from AND pr.created_at < :to
+            GROUP BY pr.status
+            """, nativeQuery = true)
+    List<StatusCountRow> countByStatusInRange(@Param("from") Instant from, @Param("to") Instant to);
+
+    @Query(value = """
+            SELECT date_trunc(:unit, pr.created_at) AS bucket, COUNT(*) AS cnt
+            FROM pickup_requests pr
+            WHERE pr.created_at >= :from AND pr.created_at < :to
+            GROUP BY bucket
+            ORDER BY bucket
+            """, nativeQuery = true)
+    List<BucketCountRow> countCreatedByBucket(@Param("from") Instant from, @Param("to") Instant to, @Param("unit") String unit);
+
+    /**
+     * "Completed" bucket is approximated via updated_at where status=COMPLETED - there's no
+     * dedicated completed_at column, and completed requests are a terminal state that's never
+     * touched again, so updated_at is an accurate proxy for completion time.
+     */
+    @Query(value = """
+            SELECT date_trunc(:unit, pr.updated_at) AS bucket, COUNT(*) AS cnt
+            FROM pickup_requests pr
+            WHERE pr.status = 'COMPLETED' AND pr.updated_at >= :from AND pr.updated_at < :to
+            GROUP BY bucket
+            ORDER BY bucket
+            """, nativeQuery = true)
+    List<BucketCountRow> countCompletedByBucket(@Param("from") Instant from, @Param("to") Instant to, @Param("unit") String unit);
+
+    interface StatusCountRow {
+        String getStatus();
+        Long getCnt();
+    }
+
+    interface BucketCountRow {
+        Instant getBucket();
+        Long getCnt();
+    }
 }

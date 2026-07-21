@@ -3,7 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { RequestResponseDto } from '../requests/request.models';
-import { AdminActionLogDto, AdminUserDto, PageResponse } from './admin.models';
+import {
+  AdminActionLogDto,
+  AdminUserDto,
+  AnalyticsGranularity,
+  PageResponse,
+  RequestsAnalyticsSummaryDto,
+  RequestsTimeSeriesPointDto
+} from './admin.models';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -14,8 +21,37 @@ export class AdminService {
     return this.http.get<PageResponse<AdminUserDto>>(`${this.baseUrl}/users`, { params: buildParams({ email, role }) });
   }
 
-  searchRequests(status: string | null): Observable<PageResponse<RequestResponseDto>> {
-    return this.http.get<PageResponse<RequestResponseDto>>(`${this.baseUrl}/requests`, { params: buildParams({ status }) });
+  searchRequests(
+    status: string | null,
+    createdFrom: string | null = null,
+    createdTo: string | null = null
+  ): Observable<PageResponse<RequestResponseDto>> {
+    return this.http.get<PageResponse<RequestResponseDto>>(`${this.baseUrl}/requests`, {
+      params: buildParams({ status, createdFrom, createdTo })
+    });
+  }
+
+  getRequestsSummary(from: string | null, to: string | null): Observable<RequestsAnalyticsSummaryDto> {
+    return this.http.get<RequestsAnalyticsSummaryDto>(`${this.baseUrl}/analytics/requests/summary`, {
+      params: buildParams({ from, to })
+    });
+  }
+
+  getRequestsTimeSeries(
+    from: string | null,
+    to: string | null,
+    granularity: AnalyticsGranularity
+  ): Observable<RequestsTimeSeriesPointDto[]> {
+    return this.http.get<RequestsTimeSeriesPointDto[]>(`${this.baseUrl}/analytics/requests/timeseries`, {
+      params: buildParams({ from, to, granularity })
+    });
+  }
+
+  exportRequestsTimeSeriesCsv(from: string | null, to: string | null, granularity: AnalyticsGranularity): Observable<string> {
+    return this.http.get(`${this.baseUrl}/analytics/requests/export`, {
+      params: buildParams({ from, to, granularity }),
+      responseType: 'text'
+    });
   }
 
   deactivateUser(id: string): Observable<AdminUserDto> {

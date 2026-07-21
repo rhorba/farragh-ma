@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
@@ -24,6 +25,7 @@ const STATUSES: RequestStatus[] = ['POSTED', 'ACCEPTED', 'SCHEDULED', 'COMPLETED
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    RouterLink,
     StatusBadgeComponent,
     TranslatePipe,
     DatePipe
@@ -35,13 +37,14 @@ export class AdminSearchComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly adminService = inject(AdminService);
   private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly roles = ROLES;
   readonly statuses = STATUSES;
   readonly currentUserId = this.authService.userId;
 
   readonly userFilterForm = this.fb.nonNullable.group({ email: '', role: '' });
-  readonly requestFilterForm = this.fb.nonNullable.group({ status: '' });
+  readonly requestFilterForm = this.fb.nonNullable.group({ status: '', createdFrom: '', createdTo: '' });
 
   readonly users = signal<AdminUserDto[]>([]);
   readonly usersSearched = signal(false);
@@ -57,6 +60,15 @@ export class AdminSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadActionLog();
+
+    const params = this.route.snapshot.queryParamMap;
+    const status = params.get('status');
+    const createdFrom = params.get('createdFrom');
+    const createdTo = params.get('createdTo');
+    if (status || createdFrom || createdTo) {
+      this.requestFilterForm.patchValue({ status: status ?? '', createdFrom: createdFrom ?? '', createdTo: createdTo ?? '' });
+      this.searchRequests();
+    }
   }
 
   toggleActive(user: AdminUserDto): void {
@@ -102,18 +114,28 @@ export class AdminSearchComponent implements OnInit {
   }
 
   searchRequests(): void {
-    const { status } = this.requestFilterForm.getRawValue();
+    const { status, createdFrom, createdTo } = this.requestFilterForm.getRawValue();
     this.requestsLoading.set(true);
-    this.adminService.searchRequests(status || null).subscribe({
-      next: (page) => {
-        this.requests.set(page.content);
-        this.requestsSearched.set(true);
-        this.requestsLoading.set(false);
-      },
-      error: () => {
-        this.requestsLoading.set(false);
-        this.requestsSearched.set(true);
-      }
-    });
+    this.adminService
+      .searchRequests(status || null, toDayStartInstant(createdFrom), toDayEndInstant(createdTo))
+      .subscribe({
+        next: (page) => {
+          this.requests.set(page.content);
+          this.requestsSearched.set(true);
+          this.requestsLoading.set(false);
+        },
+        error: () => {
+          this.requestsLoading.set(false);
+          this.requestsSearched.set(true);
+        }
+      });
   }
+}
+
+function toDayStartInstant(dateStr: string): string | null {
+  return dateStr ? `${dateStr}T00:00:00Z` : null;
+}
+
+function toDayEndInstant(dateStr: string): string | null {
+  return dateStr ? `${dateStr}T23:59:59Z` : null;
 }

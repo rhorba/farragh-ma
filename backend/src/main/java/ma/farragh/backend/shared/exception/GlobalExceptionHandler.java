@@ -9,6 +9,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,19 @@ public class GlobalExceptionHandler {
                 .toList();
         return ResponseEntity.badRequest()
                 .body(ApiError.of("VALIDATION_FAILED", "The request contains invalid fields.", details, requestId));
+    }
+
+    /**
+     * A malformed @RequestParam (e.g. an invalid enum value or an unparsable date) previously
+     * fell through to the catch-all handler below and returned a 500 - found while verifying the
+     * new analytics date-range params, but pre-existing for every enum @RequestParam too (e.g.
+     * AdminController's status filter). Maps it to a clean 400 instead.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        String requestId = requestId(request);
+        String message = "Invalid value for parameter '" + ex.getName() + "'.";
+        return ResponseEntity.badRequest().body(ApiError.of("INVALID_PARAMETER", message, requestId));
     }
 
     @ExceptionHandler(BusinessException.class)

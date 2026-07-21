@@ -20,3 +20,20 @@ export interface PageResponse<T> {
   content: T[];
   totalElements: number;
 }
+
+export type RequestStatusKey = 'POSTED' | 'ACCEPTED' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+
+export interface RequestsAnalyticsSummaryDto {
+  from: string;
+  to: string;
+  total: number;
+  countsByStatus: Record<RequestStatusKey, number>;
+}
+
+export interface RequestsTimeSeriesPointDto {
+  bucket: string;
+  created: number;
+  completed: number;
+}
+
+export type AnalyticsGranularity = 'DAY' | 'WEEK' | 'MONTH';
