@@ -160,3 +160,17 @@ Done this session:
 NOT done: git add/commit/push, CI run/confirmation, final SESSION_END/story-closure log entry for the shipped story.
 Resume point: SHIP phase for Story 5.3 - `git add` the 11 modified + 5 new files (backend AdminController/AdminService/UserRepository/AdminControllerTest, frontend auth.service/admin.models/admin.service/admin-search.component.{ts,html,spec.ts}/i18n/admin.ts, plus new AdminActionLog.java/AdminActionLogRepository.java/AdminActionType.java/AdminActionLogResponseDto.java/V9 migration/frontend/.dockerignore) + this session's .logs/ entries, commit, `git push origin main`, watch CI (rule 11), then log the milestone/SESSION_END.
 Known gaps carried forward (unchanged): no mvnw committed, local backend runs use cached Maven 3.9.9 at ~/.m2/wrapper/dists/apache-maven-3.9.9-bin/33b4b2b4/apache-maven-3.9.9/bin. Dev docker-compose Postgres volume has ~40 accumulated leftover e2e-test users across sessions (harmless, local-only, never pruned).
+
+## SESSION_START — 2026-07-21
+Resumed via "continue". Last session ended mid-Story-5.3: fully built and verified, nothing committed, resume point explicitly logged as the SHIP phase. Working tree matched the logged state exactly (16 files) plus one stray bash.exe.stackdump. Docker Desktop was down at session start, started it for the Testcontainers-backed backend suite.
+
+## SESSION_END — 2026-07-21 (MILESTONE: Story 5.3 shipped)
+Story 5.3 (admin deactivate/reactivate, full account-status management scope) is shipped on origin/main at commit 48df77e. CI green: frontend, security, backend, e2e, and build all passed; release-coverage-gate correctly skipped (tag-triggered only).
+This session executed the carried-over SHIP phase:
+- Deleted 1 stray bash.exe.stackdump crash artifact (unrelated to any work).
+- Started Docker Desktop (was down), re-ran both coverage gates per rule 6: backend all tests green, 93.18% instruction / 94.49% line; frontend 92/92 tests green, lint clean, 91.03% statements / 94.65% lines. Both matched last session's snapshot, confirming no regression.
+- Committed (48df77e) and pushed the 16 Story 5.3 files + this session's .logs/ entries to origin/main.
+- CI run 29816271937 went green on the first try (frontend, security, backend, e2e, build) - no fix cycle needed this time.
+Farragh.ma now has: v1.0 (all 7 sprints) + Story 5.3 (admin account-status management), all shipped and CI green.
+Known gaps carried forward (unchanged, none blocking): claude-in-chrome connectivity worked last session but has been flaky historically - don't assume it stays connected. No mvnw committed, local backend runs use cached Maven 3.9.9. Dev docker-compose Postgres volume has ~40 accumulated leftover e2e-test users (harmless, local-only, never pruned).
+Next: no committed backlog remains - ask the user what's next (new feature work or a new phase).
